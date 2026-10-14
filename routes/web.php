@@ -3,7 +3,10 @@
 use App\Http\Controllers\Admin\AnggotaController;
 use App\Http\Controllers\Admin\BukuController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DendaController;
 use App\Http\Controllers\Admin\KategoriController;
+use App\Http\Controllers\Admin\PeminjamanController;
+use App\Http\Controllers\Admin\PengembalianController;
 use App\Http\Controllers\Admin\PenerbitController;
 use App\Http\Controllers\Admin\PenulisController;
 use Illuminate\Support\Facades\Route;
@@ -27,6 +30,10 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('kategori', KategoriController::class)->except(['show'])->parameters(['kategori' => 'kategori']);
     Route::get('penulis', [PenulisController::class, 'index'])->name('penulis.index');
     Route::get('penerbit', [PenerbitController::class, 'index'])->name('penerbit.index');
+
+    Route::resource('peminjaman', PeminjamanController::class)->except(['show'])->parameters(['peminjaman' => 'peminjaman']);
+    Route::resource('pengembalian', PengembalianController::class)->except(['store', 'destroy'])->parameters(['pengembalian' => 'pengembalian']);
+    Route::resource('denda', DendaController::class)->except(['create', 'store', 'edit', 'update', 'destroy'])->parameters(['denda' => 'denda']);
 });
 
 require __DIR__.'/auth.php';

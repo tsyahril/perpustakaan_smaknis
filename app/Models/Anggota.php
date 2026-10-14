@@ -20,4 +20,9 @@ class Anggota extends Model
         'foto',
         'status',
     ];
+
+    public function transaksis()
+    {
+        return $this->hasMany(Transaksi::class);
+    }
 }

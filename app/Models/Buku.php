@@ -27,6 +27,11 @@ class Buku extends Model
         return $this->belongsTo(Kategori::class, 'id_kategori');
     }
 
+    public function transaksis()
+    {
+        return $this->hasMany(Transaksi::class);
+    }
+
     public function coverUrl(): ?string
     {
         if (! $this->cover) {

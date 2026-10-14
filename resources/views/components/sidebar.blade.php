@@ -224,11 +224,14 @@
             </p>
 
             <div class="space-y-1">
-                <a href="#"
+                <a href="{{ route('admin.peminjaman.index') }}"
                    :class="collapsed ? 'justify-center px-0' : ''"
                    title="Peminjaman"
                    class="flex items-center gap-3 rounded-xl px-3.5 py-3
-                          text-slate-600 transition hover:bg-blue-50 hover:text-blue-700">
+                          transition
+                          {{ request()->routeIs('admin.peminjaman.*')
+                              ? 'bg-blue-600 font-semibold text-white shadow-md shadow-blue-200'
+                              : 'text-slate-600 hover:bg-blue-50 hover:text-blue-700' }}">
 
                     <svg class="h-5 w-5 flex-shrink-0" fill="none"
                          stroke="currentColor" viewBox="0 0 24 24">
@@ -242,11 +245,14 @@
                     <span x-show="!collapsed">Peminjaman</span>
                 </a>
 
-                <a href="#"
+                <a href="{{ route('admin.pengembalian.index') }}"
                    :class="collapsed ? 'justify-center px-0' : ''"
                    title="Pengembalian"
                    class="flex items-center gap-3 rounded-xl px-3.5 py-3
-                          text-slate-600 transition hover:bg-blue-50 hover:text-blue-700">
+                          transition
+                          {{ request()->routeIs('admin.pengembalian.*')
+                              ? 'bg-blue-600 font-semibold text-white shadow-md shadow-blue-200'
+                              : 'text-slate-600 hover:bg-blue-50 hover:text-blue-700' }}">
 
                     <svg class="h-5 w-5 flex-shrink-0" fill="none"
                          stroke="currentColor" viewBox="0 0 24 24">
@@ -259,11 +265,14 @@
                     <span x-show="!collapsed">Pengembalian</span>
                 </a>
 
-                <a href="#"
+                <a href="{{ route('admin.denda.index') }}"
                    :class="collapsed ? 'justify-center px-0' : ''"
                    title="Denda"
                    class="flex items-center gap-3 rounded-xl px-3.5 py-3
-                          text-slate-600 transition hover:bg-blue-50 hover:text-blue-700">
+                          transition
+                          {{ request()->routeIs('admin.denda.*')
+                              ? 'bg-blue-600 font-semibold text-white shadow-md shadow-blue-200'
+                              : 'text-slate-600 hover:bg-blue-50 hover:text-blue-700' }}">
 
                     <svg class="h-5 w-5 flex-shrink-0" fill="none"
                          stroke="currentColor" viewBox="0 0 24 24">
