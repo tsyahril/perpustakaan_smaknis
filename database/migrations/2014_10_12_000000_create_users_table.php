@@ -17,6 +17,10 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            // Data anggota: admin / guru / siswa.
+            $table->string('role', 20)->default('siswa');
+            // Akses khusus guru: true = petugas, false = guru biasa.
+            $table->boolean('is_petugas')->default(false);
             $table->rememberToken();
             $table->timestamps();
         });

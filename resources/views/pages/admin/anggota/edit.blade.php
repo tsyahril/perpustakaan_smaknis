@@ -60,11 +60,11 @@
 
         <div id="aksesGuruWrapper" class="hidden bg-purple-50 border border-purple-200 rounded-lg p-4">
             <label class="block text-sm font-semibold text-purple-800 mb-1">Setting Akses Guru</label>
-            <p class="text-xs text-purple-600 mb-2">Tentukan apakah guru ini menjadi <b>petugas</b> atau <b>guru biasa</b>.</p>
+            <p class="text-xs text-purple-600 mb-2">Tentukan apakah guru ini menjadi <b>pustakawan</b> atau <b>guru biasa</b>.</p>
             <select id="is_petugas" name="is_petugas"
                 class="w-full px-3 py-2 text-sm border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
                 <option value="0" {{ (string) old('is_petugas', $anggota->is_petugas ? '1' : '0') === '0' ? 'selected' : '' }}>Guru Biasa</option>
-                <option value="1" {{ (string) old('is_petugas', $anggota->is_petugas ? '1' : '0') === '1' ? 'selected' : '' }}>Petugas (bisa kelola perpustakaan)</option>
+                <option value="1" {{ (string) old('is_petugas', $anggota->is_petugas ? '1' : '0') === '1' ? 'selected' : '' }}>Pustakawan (bisa kelola perpustakaan)</option>
             </select>
         </div>
 

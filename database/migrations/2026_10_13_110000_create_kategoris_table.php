@@ -8,15 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('role', 20)->default('siswa')->after('password');
+        Schema::create('kategoris', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama', 100)->unique();
+            $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('role');
-        });
+        Schema::dropIfExists('kategoris');
     }
 };

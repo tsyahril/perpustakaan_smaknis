@@ -50,7 +50,7 @@
             class="bg-white rounded-lg border p-4 hover:border-blue-400 {{ ($role ?? '') === 'guru' ? 'border-blue-600' : 'border-gray-200' }}">
             <p class="text-xs text-gray-500">Guru</p>
             <p class="mt-1 text-2xl font-bold text-gray-800">{{ $counts['guru'] ?? 0 }}</p>
-            <p class="text-xs text-gray-400 mt-0.5">{{ $counts['guru_petugas'] ?? 0 }} petugas · {{ $counts['guru_biasa'] ?? 0 }} biasa</p>
+            <p class="text-xs text-gray-400 mt-0.5">{{ $counts['guru_petugas'] ?? 0 }} pustakawan · {{ $counts['guru_biasa'] ?? 0 }} biasa</p>
         </a>
         <a href="{{ route('admin.anggota.index', ['role' => 'siswa']) }}"
             class="bg-white rounded-lg border p-4 hover:border-blue-400 {{ ($role ?? '') === 'siswa' ? 'border-blue-600' : 'border-gray-200' }}">
@@ -107,7 +107,7 @@
                                 @if ($anggota->role === 'admin')
                                     Semua
                                 @elseif ($anggota->role === 'guru')
-                                    {{ $anggota->is_petugas ? 'Petugas' : 'Guru Biasa' }}
+                                    {{ $anggota->is_petugas ? 'Pustakawan' : 'Guru Biasa' }}
                                 @else
                                     <span class="text-gray-300">—</span>
                                 @endif
