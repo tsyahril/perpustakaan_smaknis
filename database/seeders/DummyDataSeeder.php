@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Anggota;
 use App\Models\Buku;
 use App\Models\Kategori;
+use App\Models\Kelas;
 use Illuminate\Database\Seeder;
 
 class DummyDataSeeder extends Seeder
@@ -27,7 +28,7 @@ class DummyDataSeeder extends Seeder
             );
         }
 
-        // Create buku
+        // Create buku (idempoten via isbn; kategori dicari by nama agar tidak tergantung urutan id)
         $bukus = [
             [
                 'judul' => 'Laskar Pelangi',
@@ -35,7 +36,7 @@ class DummyDataSeeder extends Seeder
                 'penerbit' => 'Bentang Pustaka',
                 'isbn' => '978-979-9069-14-8',
                 'tahun_terbit' => 2005,
-                'id_kategori' => 1,
+                'kategori' => 'Fiksi',
                 'stok' => 5,
                 'deskripsi' => 'Novel tentang kisah anak-anak dari keluarga kurang mampu.',
             ],
@@ -45,7 +46,7 @@ class DummyDataSeeder extends Seeder
                 'penerbit' => 'Gramedia Pustaka Utama',
                 'isbn' => '978-979-24-0494-7',
                 'tahun_terbit' => 2009,
-                'id_kategori' => 1,
+                'kategori' => 'Fiksi',
                 'stok' => 3,
                 'deskripsi' => 'Cerita tentang perjuangan pelajar di Pesantren Modern.',
             ],
@@ -55,7 +56,7 @@ class DummyDataSeeder extends Seeder
                 'penerbit' => 'Kompas Gramedia',
                 'isbn' => '978-979-766-695-2',
                 'tahun_terbit' => 2012,
-                'id_kategori' => 1,
+                'kategori' => 'Fiksi',
                 'stok' => 4,
                 'deskripsi' => 'Novel fiksi ilmiah tentang kehidupan di planet bumi.',
             ],
@@ -65,7 +66,7 @@ class DummyDataSeeder extends Seeder
                 'penerbit' => 'L. A. Hoje',
                 'isbn' => '978-972-8952-01-7',
                 'tahun_terbit' => 2014,
-                'id_kategori' => 2,
+                'kategori' => 'Non-Fiksi',
                 'stok' => 2,
                 'deskripsi' => 'Sejarah singkat umat manusia dari Zaman Batu hingga modern.',
             ],
@@ -75,7 +76,7 @@ class DummyDataSeeder extends Seeder
                 'penerbit' => 'Erlangga',
                 'isbn' => '978-979-015-726-6',
                 'tahun_terbit' => 2022,
-                'id_kategori' => 3,
+                'kategori' => 'Pelajaran',
                 'stok' => 10,
                 'deskripsi' => 'Buku pelajaran matematika untuk siswa SMA kelas 10.',
             ],
@@ -85,7 +86,7 @@ class DummyDataSeeder extends Seeder
                 'penerbit' => 'Yudhistira',
                 'isbn' => '978-979-021-485-9',
                 'tahun_terbit' => 2022,
-                'id_kategori' => 3,
+                'kategori' => 'Pelajaran',
                 'stok' => 8,
                 'deskripsi' => 'Buku pelajaran fisika untuk siswa SMA kelas 11.',
             ],
@@ -95,7 +96,7 @@ class DummyDataSeeder extends Seeder
                 'penerbit' => 'Mizan',
                 'isbn' => '978-979-433-537-9',
                 'tahun_terbit' => 2011,
-                'id_kategori' => 4,
+                'kategori' => 'Biografi',
                 'stok' => 3,
                 'deskripsi' => 'Biografi lengkap pendiri Apple, Steve Jobs.',
             ],
@@ -105,7 +106,7 @@ class DummyDataSeeder extends Seeder
                 'penerbit' => 'Elex Media Komputindo',
                 'isbn' => '978-979-592-010-8',
                 'tahun_terbit' => 2000,
-                'id_kategori' => 5,
+                'kategori' => 'Komik',
                 'stok' => 6,
                 'deskripsi' => 'Manga petualangan tentang pencarian harta karun.',
             ],
@@ -115,17 +116,20 @@ class DummyDataSeeder extends Seeder
                 'penerbit' => 'Elex Media Komputindo',
                 'isbn' => '978-979-592-118-1',
                 'tahun_terbit' => 1999,
-                'id_kategori' => 5,
+                'kategori' => 'Komik',
                 'stok' => 5,
                 'deskripsi' => 'Manga tentang ninja muda bernama Naruto.',
             ],
         ];
 
         foreach ($bukus as $buku) {
-            Buku::create($buku);
+            $kategoriNama = $buku['kategori'];
+            unset($buku['kategori']);
+            $buku['id_kategori'] = Kategori::firstOrCreate(['nama' => $kategoriNama])->id;
+            Buku::firstOrCreate(['isbn' => $buku['isbn']], $buku);
         }
 
-        // Create anggota
+        // Create anggota (idempoten via nomor_anggota; string kelas dipetakan ke tabel kelas)
         $anggotas = [
             [
                 'nomor_anggota' => 'SIS001',
@@ -200,7 +204,16 @@ class DummyDataSeeder extends Seeder
         ];
 
         foreach ($anggotas as $anggota) {
-            Anggota::create($anggota);
+            $kelasNama = $anggota['kelas'] ?? null;
+            unset($anggota['kelas']);
+            if ($kelasNama) {
+                $parts = explode(' ', $kelasNama, 2);
+                $anggota['id_kelas'] = Kelas::firstOrCreate(
+                    ['nama' => $kelasNama],
+                    ['tingkat' => $parts[0], 'jurusan' => $parts[1] ?? null]
+                )->id;
+            }
+            Anggota::firstOrCreate(['nomor_anggota' => $anggota['nomor_anggota']], $anggota);
         }
     }
 }

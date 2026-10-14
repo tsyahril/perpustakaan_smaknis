@@ -18,12 +18,6 @@
         </a>
     </div>
 
-    @if (session('success'))
-        <div class="px-4 py-3 rounded-lg bg-green-50 border border-green-200 text-sm text-green-700">{{ session('success') }}</div>
-    @endif
-    @if (session('error'))
-        <div class="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">{{ session('error') }}</div>
-    @endif
     @if ($errors->any())
         <div class="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">
             <ul class="list-disc list-inside">
@@ -107,7 +101,14 @@
                                 @if ($anggota->role === 'admin')
                                     Semua
                                 @elseif ($anggota->role === 'guru')
-                                    {{ $anggota->is_petugas ? 'Pustakawan' : 'Guru Biasa' }}
+                                    <form action="{{ route('admin.anggota.toggle-akses', $anggota) }}" method="POST" class="inline"
+                                        data-confirm="Ubah akses {{ $anggota->name }} menjadi {{ $anggota->is_petugas ? 'Guru Biasa' : 'Pustakawan' }}?">
+                                        @csrf
+                                        <button type="submit" title="Klik untuk ubah akses"
+                                            class="px-2 py-1 text-xs font-semibold rounded border {{ $anggota->is_petugas ? 'text-purple-700 bg-purple-50 border-purple-200 hover:bg-purple-100' : 'text-gray-600 bg-gray-50 border-gray-200 hover:bg-gray-100' }}">
+                                            {{ $anggota->is_petugas ? 'Pustakawan' : 'Guru Biasa' }} ⇄
+                                        </button>
+                                    </form>
                                 @else
                                     <span class="text-gray-300">—</span>
                                 @endif
@@ -118,7 +119,7 @@
                                     <a href="{{ route('admin.anggota.edit', $anggota) }}" class="text-blue-700 hover:underline text-sm">Edit</a>
                                     <span class="text-gray-200">|</span>
                                     <form action="{{ route('admin.anggota.destroy', $anggota) }}" method="POST" class="inline"
-                                        onsubmit="return confirm('Hapus anggota {{ $anggota->name }}?')">
+                                        data-confirm="Hapus anggota {{ $anggota->name }}?">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-red-600 hover:underline text-sm">Hapus</button>

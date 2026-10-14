@@ -31,7 +31,7 @@
                               type="email" 
                               name="email" 
                               :value="old('email')" 
-                              placeholder="nama@email.com"
+                              placeholder="...@email.com"
                               required 
                               autofocus 
                               autocomplete="username" />

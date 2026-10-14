@@ -18,9 +18,6 @@
         </a>
     </div>
 
-    @if (session('success'))
-        <div class="px-4 py-3 rounded-lg bg-green-50 border border-green-200 text-sm text-green-700">{{ session('success') }}</div>
-    @endif
     @if ($errors->any())
         <div class="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">
             <ul class="list-disc list-inside">
@@ -87,7 +84,7 @@
                                     <a href="{{ route('admin.buku.edit', $buku) }}" class="text-sm text-blue-700 hover:underline">Edit</a>
                                     <span class="text-gray-200">|</span>
                                     <form action="{{ route('admin.buku.destroy', $buku) }}" method="POST" class="inline"
-                                        onsubmit="return confirm('Hapus buku {{ $buku->judul }}?')">
+                                        data-confirm="Hapus buku {{ $buku->judul }}?">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-sm text-red-600 hover:underline">Hapus</button>

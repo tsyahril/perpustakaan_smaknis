@@ -14,6 +14,10 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             UserSeeder::class,
+            KategoriSeeder::class,
+            KelasSeeder::class,
+            BukuSeeder::class,
+            // Dummy transaksi: terakhir karena butuh data buku & anggota.
             DummyDataSeeder::class,
         ]);
     }

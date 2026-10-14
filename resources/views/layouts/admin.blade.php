@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Perpustakaan SMAKNIS - @yield('title', 'Dashboard')</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body class="bg-gray-100 font-sans antialiased">
     <div class="flex min-h-screen" x-data="{ collapsed: false, mobileOpen: false }">
@@ -23,5 +24,6 @@
         </div>
     </div>
 
+    @include('components.swal')
 </body>
 </html>

@@ -29,7 +29,20 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(RouteServiceProvider::HOME);
+        $user = $request->user();
+
+        // Guru biasa / siswa tidak punya akses kelola -> ke dashboard guru.
+        // Abaikan url.intended ke /admin agar tidak mental bolak-balik.
+        $intended = session()->pull('url.intended', null);
+        if ($user->canManageLibrary()) {
+            return redirect()->intended(RouteServiceProvider::HOME);
+        }
+
+        if ($intended && ! str_starts_with(parse_url($intended, PHP_URL_PATH) ?: '', '/admin')) {
+            return redirect()->to($intended);
+        }
+
+        return redirect()->route('guru.dashboard');
     }
 
     /**

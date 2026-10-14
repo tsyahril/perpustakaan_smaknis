@@ -27,7 +27,7 @@
                     </div>
                     <div class="hidden md:block text-left">
                         <p class="text-sm font-semibold text-gray-800 leading-tight">{{ auth()->user()->name ?? '' }}</p>
-                        <span class="text-xs text-blue-700 font-medium">{{ ucfirst(auth()->user()->role ?? '') }}</span>
+                        <span class="text-xs text-blue-700 font-medium">{{ auth()->user()?->aksesLabel() ?? '' }}</span>
                     </div>
                     <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
@@ -40,7 +40,7 @@
                         <p class="text-sm font-semibold text-gray-800 truncate">{{ auth()->user()->name ?? '' }}</p>
                         <p class="text-xs text-gray-500 truncate">{{ auth()->user()->email ?? '' }}</p>
                         <span class="inline-block mt-1 px-2 py-0.5 text-xs font-medium text-blue-700 bg-blue-50 rounded">
-                            {{ ucfirst(auth()->user()->role ?? '') }}
+                            {{ auth()->user()?->aksesLabel() ?? '' }}
                         </span>
                     </div>
                     <form method="POST" action="{{ route('logout') }}">

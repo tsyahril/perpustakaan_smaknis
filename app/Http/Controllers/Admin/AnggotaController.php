@@ -117,4 +117,21 @@ class AnggotaController extends Controller
 
         return back()->with('success', "Password {$anggota->name} berhasil direset.");
     }
+
+    /**
+     * Setting cepat akses guru: guru biasa <-> pustakawan.
+     */
+    public function toggleAkses(User $anggota): RedirectResponse
+    {
+        if (! $anggota->isGuru()) {
+            return back()->with('error', 'Setting akses hanya untuk role guru.');
+        }
+
+        $anggota->is_petugas = ! (bool) $anggota->is_petugas;
+        $anggota->save();
+
+        $label = $anggota->isPustakawan() ? 'Pustakawan' : 'Guru Biasa';
+
+        return back()->with('success', "{$anggota->name} sekarang berakses sebagai {$label}.");
+    }
 }

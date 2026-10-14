@@ -87,12 +87,12 @@
                 Menu Utama
             </p>
 
-            <a href="{{ route('admin.dashboard') }}"
+            <a href="{{ auth()->user()?->canManageLibrary() ? route('admin.dashboard') : route('guru.dashboard') }}"
                :class="collapsed ? 'justify-center px-0' : ''"
                title="Dashboard"
                class="group flex items-center gap-3 rounded-xl px-3.5 py-3
                       transition-all duration-200
-                      {{ request()->routeIs('admin.dashboard')
+                      {{ request()->routeIs('admin.dashboard', 'guru.dashboard')
                           ? 'bg-blue-600 font-semibold text-white shadow-md shadow-blue-200'
                           : 'text-slate-600 hover:bg-blue-50 hover:text-blue-700' }}">
 
@@ -117,6 +117,7 @@
         </div>
 
         <!-- DATA MASTER -->
+        @if (auth()->user()?->canManageLibrary())
         <div>
             <p x-show="!collapsed"
                class="mb-2 px-3 text-[10px] font-bold uppercase
@@ -128,6 +129,7 @@
                 open: {{ request()->routeIs(
                     'admin.buku.*',
                     'admin.kategori.*',
+                    'admin.kelas.*',
                     'admin.penulis.*',
                     'admin.penerbit.*'
                 ) ? 'true' : 'false' }}
@@ -192,6 +194,16 @@
                         <span>Kategori</span>
                     </a>
 
+                    <a href="{{ route('admin.kelas.index') }}"
+                       class="flex items-center gap-3 rounded-lg px-3 py-2.5
+                              transition
+                              {{ request()->routeIs('admin.kelas.*')
+                                  ? 'bg-blue-50 font-semibold text-blue-700'
+                                  : 'text-slate-500 hover:bg-slate-50 hover:text-blue-700' }}">
+                        <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+                        <span>Kelas</span>
+                    </a>
+
                     <a href="{{ route('admin.penulis.index') }}"
                        class="flex items-center gap-3 rounded-lg px-3 py-2.5
                               transition
@@ -214,8 +226,10 @@
                 </div>
             </div>
         </div>
+        @endif
 
         <!-- TRANSAKSI -->
+        @if (auth()->user()?->canManageLibrary())
         <div>
             <p x-show="!collapsed"
                class="mb-2 px-3 text-[10px] font-bold uppercase
@@ -288,8 +302,10 @@
                 </a>
             </div>
         </div>
+        @endif
 
         <!-- MANAJEMEN -->
+        @if (auth()->user()?->canManageLibrary())
         <div>
             <p x-show="!collapsed"
                class="mb-2 px-3 text-[10px] font-bold uppercase
@@ -341,6 +357,7 @@
                 </a>
             </div>
         </div>
+        @endif
     </nav>
 
     <!-- FOOTER -->

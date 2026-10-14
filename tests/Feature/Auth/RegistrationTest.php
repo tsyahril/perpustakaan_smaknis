@@ -27,6 +27,7 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(RouteServiceProvider::HOME);
+        // Pendaftar baru berole siswa -> diarahkan ke dashboard guru.
+        $response->assertRedirect(route('guru.dashboard'));
     }
 }

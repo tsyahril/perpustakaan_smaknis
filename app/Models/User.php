@@ -45,4 +45,49 @@ class User extends Authenticatable
         'password' => 'hashed',
         'is_petugas' => 'boolean',
     ];
+
+    /**
+     * Akses perpustakaan: admin selalu penuh, guru hanya bila ditandai pustakawan.
+     */
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isGuru(): bool
+    {
+        return $this->role === 'guru';
+    }
+
+    public function isPustakawan(): bool
+    {
+        return $this->isGuru() && (bool) $this->is_petugas;
+    }
+
+    public function isGuruBiasa(): bool
+    {
+        return $this->isGuru() && ! (bool) $this->is_petugas;
+    }
+
+    public function canManageLibrary(): bool
+    {
+        return $this->isAdmin() || $this->isPustakawan();
+    }
+
+    public function aksesLabel(): string
+    {
+        if ($this->isAdmin()) {
+            return 'Admin';
+        }
+
+        if ($this->isPustakawan()) {
+            return 'Pustakawan';
+        }
+
+        if ($this->isGuru()) {
+            return 'Guru';
+        }
+
+        return 'Siswa';
+    }
 }

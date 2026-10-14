@@ -18,13 +18,6 @@
         </a>
     </div>
 
-    @if (session('success'))
-        <div class="px-4 py-3 rounded-lg bg-green-50 border border-green-200 text-sm text-green-700">{{ session('success') }}</div>
-    @endif
-    @if (session('error'))
-        <div class="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">{{ session('error') }}</div>
-    @endif
-
     <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
         <form method="GET" action="{{ route('admin.kategori.index') }}" class="flex flex-col md:flex-row gap-2 p-4 border-b border-gray-100">
             <input type="text" name="search" value="{{ $search }}" placeholder="Cari kategori..."
@@ -56,7 +49,7 @@
                                     <a href="{{ route('admin.kategori.edit', $kategori) }}" class="text-sm text-blue-700 hover:underline">Edit</a>
                                     <span class="text-gray-200">|</span>
                                     <form action="{{ route('admin.kategori.destroy', $kategori) }}" method="POST" class="inline"
-                                        onsubmit="return confirm('Hapus kategori {{ $kategori->nama }}?')">
+                                        data-confirm="Hapus kategori {{ $kategori->nama }}?">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="text-sm text-red-600 hover:underline">Hapus</button>

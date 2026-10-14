@@ -46,6 +46,6 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        return redirect($user->canManageLibrary() ? RouteServiceProvider::HOME : route('guru.dashboard'));
     }
 }
