@@ -101,20 +101,84 @@
             })();
         </script>
 
-        <div>
+        <div class="relative" id="bukuPicker">
             <label class="block text-sm font-medium text-gray-700 mb-1">Buku <span class="text-red-600">*</span></label>
-            <select name="buku_id" required class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600">
-                <option value="">Pilih Buku</option>
+            @php $bukuTerpilih = $bukus->firstWhere('id', old('buku_id')); @endphp
+            <input type="text" id="bukuKeyword" autocomplete="off" required
+                placeholder="Ketik judul / penulis / ISBN..."
+                value="{{ $bukuTerpilih ? $bukuTerpilih->judul . ' (Stok: ' . $bukuTerpilih->stok . ')' : '' }}"
+                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600">
+            <input type="hidden" name="buku_id" id="bukuId" value="{{ old('buku_id') }}">
+            <div id="bukuDropdown" class="hidden absolute z-10 mt-1 w-full max-h-56 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-lg">
                 @foreach ($bukus as $buku)
-                    <option value="{{ $buku->id }}" {{ old('buku_id') == $buku->id ? 'selected' : '' }}>
-                        {{ $buku->judul }} (Stok: {{ $buku->stok }})
-                    </option>
+                    <button type="button" data-id="{{ $buku->id }}"
+                        data-cari="{{ strtolower($buku->judul . ' ' . $buku->penulis . ' ' . $buku->isbn) }}"
+                        data-label="{{ $buku->judul }} (Stok: {{ $buku->stok }})"
+                        class="buku-opsi flex w-full items-center justify-between gap-2 px-3 py-2 text-sm text-left text-gray-700 hover:bg-blue-50">
+                        <span class="font-medium">{{ $buku->judul }}</span>
+                        <span class="text-xs text-gray-400">Stok: {{ $buku->stok }}</span>
+                    </button>
                 @endforeach
-            </select>
+                <p id="bukuKosong" class="hidden px-3 py-2 text-xs text-gray-400">Tidak ada buku yang cocok.</p>
+            </div>
             @error('buku_id')
                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
             @enderror
         </div>
+
+        <script>
+            (function () {
+                var wrap = document.getElementById('bukuPicker');
+                var keyword = document.getElementById('bukuKeyword');
+                var hiddenId = document.getElementById('bukuId');
+                var dropdown = document.getElementById('bukuDropdown');
+                var emptyMsg = document.getElementById('bukuKosong');
+                var options = Array.prototype.slice.call(dropdown.querySelectorAll('.buku-opsi'));
+
+                function filter() {
+                    var q = keyword.value.toLowerCase().trim();
+                    var shown = 0;
+                    options.forEach(function (opt) {
+                        var cocok = !q || opt.getAttribute('data-cari').indexOf(q) !== -1;
+                        opt.classList.toggle('hidden', !cocok);
+                        if (cocok) shown++;
+                    });
+                    emptyMsg.classList.toggle('hidden', shown > 0);
+                    dropdown.classList.remove('hidden');
+                }
+
+                keyword.addEventListener('input', function () {
+                    hiddenId.value = '';
+                    filter();
+                });
+                keyword.addEventListener('focus', filter);
+
+                options.forEach(function (opt) {
+                    opt.addEventListener('click', function () {
+                        hiddenId.value = opt.getAttribute('data-id');
+                        keyword.value = opt.getAttribute('data-label');
+                        dropdown.classList.add('hidden');
+                    });
+                });
+
+                document.addEventListener('click', function (e) {
+                    if (!wrap.contains(e.target)) dropdown.classList.add('hidden');
+                });
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape') dropdown.classList.add('hidden');
+                });
+
+                wrap.closest('form').addEventListener('submit', function (e) {
+                    if (!hiddenId.value) {
+                        e.preventDefault();
+                        keyword.focus();
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({ icon: 'warning', title: 'Pilih buku', text: 'Ketik lalu pilih buku dari daftar saran.' });
+                        }
+                    }
+                });
+            })();
+        </script>
 
         <div class="grid md:grid-cols-2 gap-4">
             <div>
