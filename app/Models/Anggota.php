@@ -30,4 +30,12 @@ class Anggota extends Model
     {
         return $this->belongsTo(Kelas::class, 'id_kelas');
     }
+
+    /**
+     * Akun login milik kartu anggota ini (satu orang satu akun).
+     */
+    public function user()
+    {
+        return $this->hasOne(User::class, 'id_anggota');
+    }
 }

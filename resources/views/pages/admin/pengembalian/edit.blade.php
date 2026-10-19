@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 
-@section('title', 'Pengembalian Buku')
+@section('title', 'Verifikasi Pengembalian')
 
 @section('content')
-<div class="max-w-2xl mx-auto space-y-4">
+<div class="max-w-3xl mx-auto space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-gray-800">Pengembalian Buku</h1>
-        <p class="text-sm text-gray-500">Proses pengembalian buku dan hitung denda jika terlambat.</p>
+        <h1 class="text-xl font-bold text-gray-800">Verifikasi Pengembalian</h1>
+        <p class="text-sm text-gray-500">Proses semua buku milik peminjam ini sekaligus. Tiap buku bisa punya tanggal kembali &amp; kondisi sendiri.</p>
     </div>
 
     @if ($errors->any())
@@ -18,103 +18,112 @@
             </ul>
         </div>
     @endif
+    @if (session('error'))
+        <div class="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">{{ session('error') }}</div>
+    @endif
 
-    <div class="bg-white rounded-lg border border-gray-200 p-6 space-y-6">
-        <!-- Info Peminjaman -->
-        <div class="space-y-4">
-            <h2 class="text-lg font-semibold text-gray-800">Informasi Peminjaman</h2>
-            <div class="grid md:grid-cols-2 gap-4">
-                <div>
-                    <p class="text-sm text-gray-500 mb-1">Anggota</p>
-                    <p class="font-medium text-gray-800">{{ $pengembalian->anggota->nama }}</p>
-                    <p class="text-xs text-gray-400">{{ $pengembalian->anggota->nomor_anggota }}</p>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500 mb-1">Buku</p>
-                    <p class="font-medium text-gray-800">{{ $pengembalian->buku->judul }}</p>
-                    <p class="text-xs text-gray-400">{{ $pengembalian->buku->penulis }}</p>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500 mb-1">Tanggal Pinjam</p>
-                    <p class="font-medium text-gray-800">{{ $pengembalian->tanggal_pinjam->format('d/m/Y') }}</p>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500 mb-1">Tanggal Kembali Rencana</p>
-                    <p class="font-medium text-gray-800">{{ $pengembalian->tanggal_kembali_rencana->format('d/m/Y') }}</p>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500 mb-1">Durasi Peminjaman</p>
-                    <p class="font-medium text-gray-800">{{ $pengembalian->tanggal_kembali_rencana->diffInDays($pengembalian->tanggal_pinjam) }} hari</p>
-                </div>
-                <div>
-                    <p class="text-sm text-gray-500 mb-1">Status</p>
-                    <p class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                        Sedang Dipinjam
-                    </p>
-                </div>
+    @php $anggota = $items->first()->anggota; @endphp
+
+    <div class="bg-white rounded-lg border border-gray-200 p-6">
+        <div class="grid md:grid-cols-3 gap-4">
+            <div>
+                <p class="text-sm text-gray-500 mb-1">Peminjam</p>
+                <p class="font-medium text-gray-800">{{ $anggota->nama }}</p>
+                <p class="text-xs text-gray-400">{{ $anggota->nomor_anggota }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500 mb-1">Kode Peminjaman</p>
+                <p class="font-medium text-gray-800">{{ $items->first()->kode_peminjaman ?? '-' }}</p>
+            </div>
+            <div>
+                <p class="text-sm text-gray-500 mb-1">Jumlah Buku</p>
+                <p class="font-medium text-gray-800">{{ $items->count() }} buku</p>
+            </div>
+        </div>
+    </div>
+
+    <form action="{{ route('admin.pengembalian.update', $groupKey) }}" method="POST" class="bg-white rounded-lg border border-gray-200 p-6 space-y-5">
+        @csrf
+        @method('PUT')
+
+        <div class="rounded-lg bg-blue-50 border border-blue-200 p-4">
+            <p class="text-sm font-medium text-gray-700 mb-2">Terapkan tanggal kembali yang sama ke semua buku</p>
+            <div class="flex flex-wrap items-center gap-2">
+                <input type="date" id="tanggalKembaliSemua" value="{{ $today->format('Y-m-d') }}"
+                    class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600">
+                <button type="button" id="terapkanSemua"
+                    class="px-3 py-2 text-sm font-semibold bg-blue-700 text-white rounded-lg hover:bg-blue-800">
+                    Terapkan ke semua buku
+                </button>
+                <span class="text-xs text-gray-500">Atau isi tanggal tiap buku satu per satu di bawah.</span>
             </div>
         </div>
 
-        <!-- Form Pengembalian -->
-        <form action="{{ route('admin.pengembalian.update', $pengembalian) }}" method="POST" class="space-y-4 border-t border-gray-200 pt-6">
-            @csrf
-            @method('PUT')
+        <div class="space-y-3">
+            <h2 class="font-semibold text-gray-800 text-sm">Buku yang dikembalikan</h2>
+            @foreach ($items as $item)
+                <div class="border border-gray-200 rounded-lg p-4 space-y-3 bg-gray-50">
+                    <div>
+                        <p class="font-medium text-gray-800">{{ $item->buku->judul }}</p>
+                        <p class="text-xs text-gray-400">
+                            Pinjam: {{ $item->tanggal_pinjam->format('d/m/Y') }} ·
+                            Rencana: {{ $item->tanggalRencanaLabel() }}
+                            @if (! $item->tanggal_kembali_rencana)
+                                <span class="text-gray-400">(tidak ada rencana)</span>
+                            @endif
+                        </p>
+                    </div>
+                    <div class="grid md:grid-cols-3 gap-3">
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Tanggal kembali</label>
+                            <input type="date" name="tanggal_kembali_aktual[{{ $item->id }}]" class="tanggalKembali per-buku w-full px-3 py-2 text-sm border border-gray-300 rounded-lg"
+                                value="{{ old('tanggal_kembali_aktual.' . $item->id, $today->format('Y-m-d')) }}">
+                            @error('tanggal_kembali_aktual.' . $item->id)
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Kondisi <span class="text-red-600">*</span></label>
+                            <select name="kondisi[{{ $item->id }}]" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg">
+                                <option value="baik" {{ old('kondisi.' . $item->id) === 'baik' ? 'selected' : '' }}>Baik</option>
+                                <option value="rusak" {{ old('kondisi.' . $item->id) === 'rusak' ? 'selected' : '' }}>Rusak</option>
+                                <option value="hilang" {{ old('kondisi.' . $item->id) === 'hilang' ? 'selected' : '' }}>Hilang</option>
+                            </select>
+                            @error('kondisi.' . $item->id)
+                                <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-gray-600 mb-1">Catatan (opsional)</label>
+                            <input type="text" name="catatan[{{ $item->id }}]" value="{{ old('catatan.' . $item->id) }}"
+                                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600">
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
 
-            <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Kembali Aktual <span class="text-red-600">*</span></label>
-                <input type="date" name="tanggal_kembali_aktual" value="{{ old('tanggal_kembali_aktual', date('Y-m-d')) }}" required
-                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600"
-                    id="tanggal_kembali_aktual">
-                @error('tanggal_kembali_aktual')
-                    <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <!-- Preview Denda -->
-            <div id="preview-denda" class="hidden p-4 rounded-lg bg-yellow-50 border border-yellow-200">
-                <p class="text-sm text-gray-600 mb-2">
-                    <span class="font-medium">Perkiraan Denda:</span>
-                    <span id="denda-value" class="font-semibold text-yellow-800">—</span>
-                </p>
-                <p class="text-xs text-gray-500">
-                    Denda dihitung Rp 5.000 per hari terlambat dari tanggal kembali rencana.
-                </p>
-            </div>
-
-            <div class="flex gap-3 pt-2">
-                <button type="submit" class="px-4 py-2 bg-green-700 text-white text-sm font-semibold rounded-lg hover:bg-green-800">
-                    Simpan Pengembalian
-                </button>
-                <a href="{{ route('admin.pengembalian.index') }}" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200">
-                    Batal
-                </a>
-            </div>
-        </form>
-    </div>
+        <div class="flex gap-3 pt-2 border-t border-gray-100">
+            <button type="submit" class="px-4 py-2 bg-green-700 text-white text-sm font-semibold rounded-lg hover:bg-green-800">
+                Proses Pengembalian ({{ $items->count() }} buku)
+            </button>
+            <a href="{{ route('admin.request-pengembalian.index') }}" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200">
+                Batal
+            </a>
+        </div>
+    </form>
 </div>
 
 <script>
-    const inputTanggalKembaliAktual = document.getElementById('tanggal_kembali_aktual');
-    const previewDenda = document.getElementById('preview-denda');
-    const dendaValue = document.getElementById('denda-value');
-
-    const tanggalRencana = new Date('{{ $pengembalian->tanggal_kembali_rencana->format('Y-m-d') }}');
-
-    function calculateDenda() {
-        const tanggalAktual = new Date(inputTanggalKembaliAktual.value);
-        const diffTime = tanggalAktual - tanggalRencana;
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-        if (diffDays > 0) {
-            const denda = diffDays * 5000;
-            dendaValue.textContent = 'Rp' + denda.toLocaleString('id-ID');
-            previewDenda.classList.remove('hidden');
-        } else {
-            previewDenda.classList.add('hidden');
-        }
-    }
-
-    inputTanggalKembaliAktual.addEventListener('change', calculateDenda);
-    calculateDenda();
+    (function () {
+        const semua = document.getElementById('tanggalKembaliSemua');
+        const tombol = document.getElementById('terapkanSemua');
+        if (!semua || !tombol) return;
+        tombol.addEventListener('click', function () {
+            document.querySelectorAll('.per-buku').forEach(function (input) {
+                input.value = semua.value;
+            });
+        });
+    })();
 </script>
 @endsection

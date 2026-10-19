@@ -13,12 +13,15 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            UserSeeder::class,
             KategoriSeeder::class,
+            // Harus jalan sebelum UserSeeder: 100 anggota dummy memakai daftar kelas.
             KelasSeeder::class,
             BukuSeeder::class,
-            // Dummy transaksi: terakhir karena butuh data buku & anggota.
+            // Kartu anggota lama; akunnya disambung oleh UserSeeder di bawah.
             DummyDataSeeder::class,
+            // Sumber utama anggota: kartu anggota + akun login sekaligus (user = anggota).
+            // Harus setelah semua kartu anggota sudah ada supaya semuanya dapat akun.
+            UserSeeder::class,
         ]);
     }
 }

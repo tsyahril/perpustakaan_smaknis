@@ -6,7 +6,7 @@
 <div class="max-w-2xl mx-auto space-y-4">
     <div>
         <h1 class="text-xl font-bold text-gray-800">Tambah Anggota</h1>
-        <p class="text-sm text-gray-500">Isi data nama, gmail, password, dan role anggota.</p>
+        <p class="text-sm text-gray-500">Isi nama, gmail, password, dan role. Siswa wajib pakai kolom kelas, guru wajib pakai kolom bagian.</p>
     </div>
 
     @if ($errors->any())
@@ -26,6 +26,7 @@
             <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
             <input type="text" name="name" value="{{ old('name') }}" required placeholder="cth: Budi Santoso"
                 class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <p class="mt-1 text-xs text-gray-400">Kalau nama ini sama dengan kartu anggota yang sudah ada, keduanya otomatis disambung.</p>
         </div>
 
         <div>
@@ -51,26 +52,36 @@
             <label class="block text-sm font-semibold text-gray-700 mb-1">Role</label>
             <select id="role" name="role" required
                 class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">— Pilih Role —</option>
+                <option value="">-- Pilih Role --</option>
                 <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Admin</option>
+                <option value="pustakawan" {{ old('role') === 'pustakawan' ? 'selected' : '' }}>Pustakawan</option>
                 <option value="guru" {{ old('role') === 'guru' ? 'selected' : '' }}>Guru</option>
                 <option value="siswa" {{ old('role') === 'siswa' ? 'selected' : '' }}>Siswa</option>
             </select>
+            <p class="mt-1 text-xs text-gray-400">Pustakawan punya akses penuh perpustakaan, sama seperti admin.</p>
         </div>
 
-        <div id="aksesGuruWrapper" class="hidden bg-purple-50 border border-purple-200 rounded-lg p-4">
-            <label class="block text-sm font-semibold text-purple-800 mb-1">Setting Akses Guru</label>
-            <p class="text-xs text-purple-600 mb-2">Tentukan apakah guru ini menjadi <b>pustakawan</b> atau <b>guru biasa</b>.</p>
-            <select id="is_petugas" name="is_petugas"
-                class="w-full px-3 py-2 text-sm border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white">
-                <option value="0" {{ old('is_petugas') == '0' ? 'selected' : '' }}>Guru Biasa</option>
-                <option value="1" {{ old('is_petugas') == '1' ? 'selected' : '' }}>Pustakawan (bisa kelola perpustakaan)</option>
+        {{-- Kolom kelas untuk siswa / bagian untuk guru --}}
+        <div id="kelasWrapper" class="hidden bg-blue-50 border border-blue-200 rounded-lg p-4">
+            <label id="kelasLabel" class="block text-sm font-semibold text-blue-800 mb-1">Kelas</label>
+            <select name="kelas" id="kelasSelect"
+                class="w-full px-3 py-2 text-sm border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"></select>
+            <p id="kelasHint" class="mt-1 text-xs text-blue-600"></p>
+        </div>
+
+        <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-1">Kartu Anggota (opsional)</label>
+            @php $kartuTerpilih = (string) old('id_anggota', 'auto'); @endphp
+            <select name="id_anggota"
+                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                <option value="auto" {{ $kartuTerpilih === 'auto' ? 'selected' : '' }}>Otomatis dari nama</option>
+                @foreach ($daftarAnggota as $a)
+                    <option value="{{ $a->id }}" {{ $kartuTerpilih === (string) $a->id ? 'selected' : '' }}>
+                        {{ $a->nomor_anggota }} — {{ $a->nama }}
+                    </option>
+                @endforeach
             </select>
-        </div>
-
-        <div id="aksesAdminInfo" class="hidden bg-red-50 border border-red-200 rounded-lg p-4">
-            <p class="text-sm font-semibold text-red-800">Akses: Semua</p>
-            <p class="text-xs text-red-600 mt-0.5">Admin otomatis memiliki semua akses perpustakaan.</p>
+            <p class="mt-1 text-xs text-gray-400">Tautan ini dipakai untuk menghitung Total Pinjam pada halaman daftar anggota.</p>
         </div>
 
         <div class="flex justify-end gap-2 pt-2">
@@ -84,16 +95,49 @@
 
 <script>
     (function () {
+        var DAFTAR_KELAS = @json($daftarKelas);
+        var BAGIAN_GURU = @json($bagianGuru);
         var role = document.getElementById('role');
-        var wrapper = document.getElementById('aksesGuruWrapper');
-        var adminInfo = document.getElementById('aksesAdminInfo');
+        var wrap = document.getElementById('kelasWrapper');
+        var label = document.getElementById('kelasLabel');
+        var hint = document.getElementById('kelasHint');
+        var sel = document.getElementById('kelasSelect');
+        var current = @json(old('kelas', ''));
+
         function toggle() {
-            if (role.value === 'guru') wrapper.classList.remove('hidden');
-            else wrapper.classList.add('hidden');
-            if (role.value === 'admin') adminInfo.classList.remove('hidden');
-            else adminInfo.classList.add('hidden');
+            var isSiswa = role.value === 'siswa';
+            var isGuru = role.value === 'guru';
+
+            if (!isSiswa && !isGuru) {
+                wrap.classList.add('hidden');
+                sel.innerHTML = '';
+                sel.disabled = true;
+                return;
+            }
+
+            wrap.classList.remove('hidden');
+            sel.disabled = false;
+
+            var opsi = isSiswa ? DAFTAR_KELAS : BAGIAN_GURU;
+            label.textContent = isSiswa ? 'Kelas (khusus siswa)' : 'Bagian / Jabatan (khusus guru)';
+            hint.textContent = isSiswa
+                ? 'Pilih kelas siswa, cth: X A atau XI B.'
+                : 'Pilih bagian guru, cth: Staf atau Guru BK.';
+
+            sel.innerHTML = '<option value="">-- Pilih --</option>' + opsi.map(function (o) {
+                return '<option value="' + o + '">' + o + '</option>';
+            }).join('');
+
+            if (current && opsi.indexOf(current) !== -1) {
+                sel.value = current;
+            }
         }
-        role.addEventListener('change', toggle);
+
+        role.addEventListener('change', function () {
+            current = sel.value;
+            toggle();
+        });
+
         toggle();
     })();
 </script>

@@ -13,6 +13,11 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     /**
+     * Role yang tersedia: admin, pustakawan, guru, siswa.
+     */
+    public const ROLES = ['admin', 'pustakawan', 'guru', 'siswa'];
+
+    /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -22,6 +27,10 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        // Satu kolom untuk dua kebutuhan: siswa = kelas, guru = bagian/jabatan.
+        'kelas',
+        // Tautan ke kartu anggota supaya jumlah peminjaman bisa ditampilkan.
+        'id_anggota',
         'is_petugas',
     ];
 
@@ -47,11 +56,25 @@ class User extends Authenticatable
     ];
 
     /**
-     * Akses perpustakaan: admin selalu penuh, guru hanya bila ditandai pustakawan.
+     * Kartu anggota yang terhubung dengan akun ini.
+     */
+    public function anggota()
+    {
+        return $this->belongsTo(Anggota::class, 'id_anggota');
+    }
+
+    /**
+     * Akses perpustakaan: admin & pustakawan.
      */
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
+    }
+
+    public function isPustakawan(): bool
+    {
+        return $this->role === 'pustakawan'
+            || ($this->isGuru() && (bool) $this->is_petugas);
     }
 
     public function isGuru(): bool
@@ -59,9 +82,9 @@ class User extends Authenticatable
         return $this->role === 'guru';
     }
 
-    public function isPustakawan(): bool
+    public function isSiswa(): bool
     {
-        return $this->isGuru() && (bool) $this->is_petugas;
+        return $this->role === 'siswa';
     }
 
     public function isGuruBiasa(): bool
