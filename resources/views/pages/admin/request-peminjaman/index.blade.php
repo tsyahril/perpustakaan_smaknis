@@ -1,12 +1,12 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Request Peminjaman')
 
 @section('content')
 <div class="space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-gray-800">Request Peminjaman</h1>
-        <p class="text-sm text-gray-500">Pengajuan pinjam yang menunggu persetujuan pustakawan. Pilih nama peminjam dulu, lalu daftar pengajuannya. Yang sudah disetujui ada di <a href="{{ route('admin.peminjaman.index') }}" class="text-blue-700 hover:underline font-medium">Data Peminjaman</a>.</p>
+        <h1 class="text-xl font-bold text-slate-100">Request Peminjaman</h1>
+        <p class="text-sm text-slate-400">Pengajuan pinjam yang menunggu persetujuan pustakawan. Pilih nama peminjam dulu, lalu daftar pengajuannya. Yang sudah disetujui ada di <a href="{{ route('admin.peminjaman.index') }}" class="text-blue-700 hover:underline font-medium">Data Peminjaman</a>.</p>
     </div>
 
     @if (session('success'))
@@ -19,26 +19,26 @@
     <div class="grid grid-cols-3 gap-3">
         @foreach (['diajukan' => ['Menunggu', 'bg-yellow-50 border-yellow-200 text-yellow-800'], 'disetujui' => ['Disetujui', 'bg-green-50 border-green-200 text-green-800'], 'ditolak' => ['Ditolak', 'bg-red-50 border-red-200 text-red-800']] as $key => [$label, $cls])
             <a href="{{ route('admin.request-peminjaman.index', ['status' => $key, 'nama_peminjam' => $namaPeminjam]) }}"
-                class="bg-white rounded-lg border p-4 hover:border-blue-400 {{ $status === $key ? 'border-blue-600' : 'border-gray-200' }}">
-                <p class="text-xs text-gray-500">{{ $label }}</p>
-                <p class="mt-1 text-2xl font-bold text-gray-800">{{ $counts[$key] ?? 0 }}</p>
+                class="bg-[#0b1d32] rounded-lg border p-4 hover:border-blue-400 {{ $status === $key ? 'border-blue-600' : 'border-slate-700' }}">
+                <p class="text-xs text-slate-400">{{ $label }}</p>
+                <p class="mt-1 text-2xl font-bold text-slate-100">{{ $counts[$key] ?? 0 }}</p>
             </a>
         @endforeach
     </div>
 
-    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <form method="GET" action="{{ route('admin.request-peminjaman.index') }}" class="grid md:grid-cols-4 gap-2 p-4 border-b border-gray-100">
+    <div class="bg-[#0b1d32] rounded-lg border border-slate-700 overflow-hidden">
+        <form method="GET" action="{{ route('admin.request-peminjaman.index') }}" class="grid md:grid-cols-4 gap-2 p-4 border-b border-slate-700/80">
             <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1">Nama Peminjam</label>
-                <select name="nama_peminjam" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600">
-                    <option value="">-- Semua peminjam --</option>
+                <label class="block text-xs font-medium text-slate-300 mb-1">Nama Peminjam</label>
+                <select name="nama_peminjam" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-slate-100 bg-[#071426] border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-400/30">
+                    <option value="" class="bg-[#0b1d32] text-slate-100">-- Semua peminjam --</option>
                     @foreach ($daftarPeminjam as $nama)
                         <option value="{{ $nama }}" {{ $namaPeminjam === $nama ? 'selected' : '' }}>{{ $nama }}</option>
                     @endforeach
                 </select>
             </div>
             <div>
-                <label class="block text-xs font-medium text-gray-600 mb-1">Status Pengajuan</label>
+                <label class="block text-xs font-medium text-slate-300 mb-1">Status Pengajuan</label>
                 <select name="status" class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg">
                     <option value="diajukan" {{ $status === 'diajukan' ? 'selected' : '' }}>Menunggu persetujuan</option>
                     <option value="disetujui" {{ $status === 'disetujui' ? 'selected' : '' }}>Disetujui</option>
@@ -50,14 +50,14 @@
                 <button type="submit" class="flex-1 px-4 py-2 text-sm font-semibold bg-gray-800 text-white rounded-lg hover:bg-gray-700">Tampilkan</button>
             </div>
             <div class="self-end flex gap-2">
-                <a href="{{ route('admin.request-peminjaman.index') }}" class="px-4 py-2 text-sm font-semibold bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 text-center">Reset</a>
+                <a href="{{ route('admin.request-peminjaman.index') }}" class="px-4 py-2 text-sm font-semibold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 text-center">Reset</a>
             </div>
         </form>
 
         <div class="overflow-x-auto">
             <table class="min-w-full text-sm">
                 <thead>
-                    <tr class="bg-gray-50 text-gray-500 text-xs border-b border-gray-100">
+                    <tr class="bg-[#142c47] text-slate-400 text-xs border-b border-slate-700/80">
                         <th class="px-4 py-3 text-left font-semibold w-10">No</th>
                         <th class="px-4 py-3 text-left font-semibold">Peminjam</th>
                         <th class="px-4 py-3 text-left font-semibold">Buku</th>
@@ -66,31 +66,31 @@
                         <th class="px-4 py-3 text-center font-semibold">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody class="divide-y divide-slate-700/70">
                     @forelse ($requests as $i => $g)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-3 text-gray-400 align-top">{{ $requests->firstItem() + $i }}</td>
+                        <tr class="hover:bg-[#142c47]">
+                            <td class="px-4 py-3 text-slate-400 align-top">{{ $requests->firstItem() + $i }}</td>
                             <td class="px-4 py-3 align-top">
-                                <p class="font-medium text-gray-800">{{ $g->anggota->nama }}</p>
-                                <p class="text-xs text-gray-400">{{ $g->anggota->nomor_anggota }}{{ $g->anggota->kelas ? ' · ' . $g->anggota->kelas->nama : '' }}</p>
+                                <p class="font-medium text-slate-100">{{ $g->anggota->nama }}</p>
+                                <p class="text-xs text-slate-400">{{ $g->anggota->nomor_anggota }}{{ $g->anggota->kelas ? ' Â· ' . $g->anggota->kelas->nama : '' }}</p>
                                 @if ($g->kode)
                                     <p class="text-xs font-mono text-blue-700">{{ $g->kode }}</p>
                                 @endif
                             </td>
                             <td class="px-4 py-3 align-top">
                                 @foreach ($g->items as $item)
-                                    <p class="text-sm text-gray-800">• {{ $item->buku->judul }}</p>
-                                    <p class="text-xs text-gray-400">
+                                    <p class="text-sm text-slate-100">â€¢ {{ $item->buku->judul }}</p>
+                                    <p class="text-xs text-slate-400">
                                         Rencana: {{ $item->tanggalRencanaLabel() }}
                                         @if (! $item->tanggal_kembali_rencana)
-                                            <span class="text-gray-400">(tanpa rencana)</span>
+                                            <span class="text-slate-400">(tanpa rencana)</span>
                                         @endif
                                     </p>
                                 @endforeach
                             </td>
-                            <td class="px-4 py-3 text-center text-gray-600 text-xs align-top">
+                            <td class="px-4 py-3 text-center text-slate-300 text-xs align-top">
                                 {{ $g->tanggal_pinjam->format('d/m/Y') }}
-                                <span class="block text-gray-400">{{ $g->jumlah_buku }} buku</span>
+                                <span class="block text-slate-400">{{ $g->jumlah_buku }} buku</span>
                             </td>
                             <td class="px-4 py-3 text-center align-top">
                                 @if ($g->status_persetujuan === 'diajukan')
@@ -101,7 +101,7 @@
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">Ditolak</span>
                                 @endif
                                 @if ($g->catatan)
-                                    <span class="block mt-1 text-xs text-gray-400">{{ $g->catatan }}</span>
+                                    <span class="block mt-1 text-xs text-slate-400">{{ $g->catatan }}</span>
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-center align-top">
@@ -116,14 +116,14 @@
                                             <button type="submit" class="text-xs font-semibold text-white bg-red-600 px-2.5 py-1 rounded-lg hover:bg-red-700">Tolak</button>
                                         </form>
                                     @else
-                                        <span class="text-xs text-gray-300">Selesai</span>
+                                        <span class="text-xs text-slate-500">Selesai</span>
                                     @endif
                                 </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-10 text-center text-gray-400">
+                            <td colspan="6" class="px-4 py-10 text-center text-slate-400">
                                 Tidak ada pengajuan{{ $namaPeminjam !== '' ? ' dari peminjam "' . $namaPeminjam . '"' : '' }}.
                             </td>
                         </tr>
@@ -133,8 +133,9 @@
         </div>
 
         @if ($requests->hasPages())
-            <div class="p-4 border-t border-gray-100">{{ $requests->links() }}</div>
+            <div class="p-4 border-t border-slate-700/80">{{ $requests->links() }}</div>
         @endif
     </div>
 </div>
 @endsection
+

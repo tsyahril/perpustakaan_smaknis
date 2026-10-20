@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Kategori')
 
@@ -6,8 +6,8 @@
 <div class="space-y-4">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
-            <h1 class="text-xl font-bold text-gray-800">Kategori</h1>
-            <p class="text-sm text-gray-500">Kelola kategori buku.</p>
+            <h1 class="text-xl font-bold text-slate-100">Kategori</h1>
+            <p class="text-sm text-slate-400">Kelola kategori buku.</p>
         </div>
         <a href="{{ route('admin.kategori.create') }}"
             class="inline-flex items-center gap-2 px-4 py-2 bg-blue-700 text-white text-sm font-semibold rounded-lg hover:bg-blue-800">
@@ -72,3 +72,4 @@
     </div>
 </div>
 @endsection
+

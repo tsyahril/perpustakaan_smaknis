@@ -120,125 +120,185 @@ class PengembalianController extends Controller
         ]);
     }
 
-    public function update(Request $request, string $groupKey): RedirectResponse
-    {
-        $items = $this->resolveGroup($groupKey)->where('status', 'pinjam');
+    
+public function update(Request $request, string $groupKey): RedirectResponse
+{
+    $validated = $request->validate([
+        'transaksi_ids' => ['required', 'array', 'min:1'],
+        'transaksi_ids.*' => ['required', 'integer', 'distinct'],
+        'tanggal_kembali_aktual' => ['required', 'array'],
+        'tanggal_kembali_aktual.*' => ['nullable', 'date'],
+        'kondisi' => ['required', 'array'],
+        'kondisi.*' => ['required', 'in:baik,rusak,hilang'],
+        'catatan' => ['nullable', 'array'],
+        'catatan.*' => ['nullable', 'string', 'max:1000'],
+    ]);
 
-        if ($items->isEmpty()) {
-            return back()->with('error', 'Tidak ada buku aktif pada peminjaman ini.');
-        }
+    $semuaItemAktif = $this->resolveGroup($groupKey)
+        ->where('status', 'pinjam')
+        ->values();
 
-        $validated = $request->validate([
-            'tanggal_kembali_aktual' => ['required', 'array'],
-            'tanggal_kembali_aktual.*' => ['nullable', 'date'],
-            'kondisi' => ['required', 'array'],
-            'kondisi.*' => ['required', 'in:baik,rusak,hilang'],
-            'catatan' => ['nullable', 'array'],
-            'catatan.*' => ['nullable', 'string', 'max:1000'],
-        ]);
-
-        $totalDenda = 0;
-        $jumlahBuku = 0;
-
-        DB::transaction(function () use ($items, $validated, &$totalDenda, &$jumlahBuku) {
-            foreach ($items as $item) {
-                $kondisi = $validated['kondisi'][$item->id] ?? 'baik';
-                $catatan = $validated['catatan'][$item->id] ?? null;
-                // Tiap buku boleh punya tanggal kembali sendiri.
-                $tglAktual = $validated['tanggal_kembali_aktual'][$item->id] ?? null;
-                $tglAktual = ! empty($tglAktual) ? Carbon::parse($tglAktual) : Carbon::today();
-                $rincian = $item->hitungDenda($kondisi, $tglAktual);
-
-                $item->update([
-                    'tanggal_kembali_aktual' => $tglAktual->toDateString(),
-                    'kondisi' => $kondisi,
-                    'hari_terlambat' => $rincian['hari'],
-                    'denda_terlambat' => $rincian['denda_terlambat'],
-                    'denda_kondisi' => $rincian['denda_kondisi'],
-                    'denda' => $rincian['total'],
-                    'catatan' => $catatan,
-                    'status' => 'dikembalikan',
-                ]);
-
-                // Stok kembali hanya bila buku fisik kembali (baik/rusak).
-                if ($kondisi !== 'hilang') {
-                    $item->buku->increment('stok');
-                }
-
-                $totalDenda += $rincian['total'];
-                $jumlahBuku++;
-            }
-        });
-
-        $pesan = "Pengembalian {$jumlahBuku} buku berhasil diproses.";
-        if ($totalDenda > 0) {
-            $pesan .= ' Total denda Rp' . number_format($totalDenda, 0, ',', '.') . '.';
-        }
-
-        return redirect()->route('admin.pengembalian.index')->with('success', $pesan);
+    if ($semuaItemAktif->isEmpty()) {
+        return back()->with('error', 'Tidak ada buku aktif pada peminjaman ini.');
     }
 
-    /**
-     * Hapus satu riwayat peminjaman (bila tidak ada denda belum lunas).
-     */
-    public function destroy(string $groupKey): RedirectResponse
-    {
-        $items = $this->resolveGroup($groupKey);
+    $ids = array_map('intval', $validated['transaksi_ids']);
 
-        if ($items->where('status', 'dikembalikan')->isEmpty()) {
-            return back()->with('error', 'Riwayat tidak ditemukan.');
-        }
+    // Pastikan semua ID pilihan benar-benar termasuk peminjaman ini.
+    $items = $semuaItemAktif
+        ->whereIn('id', $ids)
+        ->values();
 
-        $belumLunas = $items->filter(fn ($i) => $i->denda > 0 && ! $i->isDendaLunas());
-
-        if ($belumLunas->isNotEmpty()) {
-            $total = $belumLunas->sum('denda');
-
-            return back()->with('error', 'Tidak bisa dihapus: masih ada denda belum dibayar sebesar Rp' . number_format($total, 0, ',', '.') . '.');
-        }
-
-        $items->each->delete();
-
-        return back()->with('success', 'Riwayat pengembalian berhasil dihapus.');
+    if ($items->count() !== count($ids)) {
+        return back()->with('error', 'Pilihan buku tidak valid atau sudah diproses.');
     }
 
-    /**
-     * Hapus banyak riwayat sekaligus (kecuali yang denda belum lunas).
-     */
-    public function destroySelected(Request $request): RedirectResponse
-    {
-        $request->validate([
-            'group_keys' => ['required', 'array', 'min:1'],
-            'group_keys.*' => ['required', 'string'],
-        ]);
+    $totalDenda = 0;
+    $jumlahBuku = 0;
 
-        $dihapus = 0;
-        $dilewati = [];
+    DB::transaction(function () use (
+        $items,
+        $validated,
+        &$totalDenda,
+        &$jumlahBuku
+    ) {
+        foreach ($items as $item) {
+            $item->loadMissing('buku');
 
-        foreach ($request->input('group_keys', []) as $key) {
-            $items = $this->resolveGroup($key);
+            $kondisi = $validated['kondisi'][$item->id] ?? 'baik';
+            $catatan = $validated['catatan'][$item->id] ?? null;
 
-            if ($items->where('status', 'dikembalikan')->isEmpty()) {
-                continue;
+            $tglAktual = $validated['tanggal_kembali_aktual'][$item->id] ?? null;
+            $tglAktual = !empty($tglAktual)
+                ? Carbon::parse($tglAktual)
+                : Carbon::today();
+
+            $rincian = $item->hitungDenda($kondisi, $tglAktual);
+
+            $item->update([
+                'tanggal_kembali_aktual' => $tglAktual->toDateString(),
+                'kondisi' => $kondisi,
+                'hari_terlambat' => $rincian['hari'],
+                'denda_terlambat' => $rincian['denda_terlambat'],
+                'denda_kondisi' => $rincian['denda_kondisi'],
+                'denda' => $rincian['total'],
+                'catatan' => $catatan,
+                'status' => 'dikembalikan',
+            ]);
+
+            // Stok bertambah hanya jika buku fisiknya kembali.
+            if ($kondisi !== 'hilang') {
+                $item->buku->increment('stok');
             }
 
-            $belumLunas = $items->filter(fn ($i) => $i->denda > 0 && ! $i->isDendaLunas());
-
-            if ($belumLunas->isNotEmpty()) {
-                $nama = $items->first()->anggota->nama ?? '-';
-                $dilewati[] = $nama . ' (Rp' . number_format($belumLunas->sum('denda'), 0, ',', '.') . ')';
-                continue;
-            }
-
-            $items->each->delete();
-            $dihapus++;
+            $totalDenda += $rincian['total'];
+            $jumlahBuku++;
         }
+    });
 
-        $pesan = "{$dihapus} riwayat berhasil dihapus.";
-        if (! empty($dilewati)) {
-            $pesan .= ' Dilewati karena denda belum dibayar: ' . implode(', ', $dilewati) . '.';
-        }
-
-        return back()->with('success', $pesan);
+    $pesan = "{$jumlahBuku} buku berhasil diproses.";
+    if ($totalDenda > 0) {
+        $pesan .= ' Total denda Rp' .
+            number_format($totalDenda, 0, ',', '.') . '.';
     }
+
+    return redirect()
+        ->route('admin.pengembalian.index')
+        ->with('success', $pesan);
+}
+
+
+    
+/**
+ * Hapus satu transaksi buku dari riwayat.
+ */
+public function destroy(string $groupKey): RedirectResponse
+{
+    // Parameter route sekarang adalah ID transaksi buku.
+    $item = Transaksi::with(['anggota', 'buku'])
+        ->find((int) $groupKey);
+
+    if (! $item || $item->status !== 'dikembalikan') {
+        return back()->with('error', 'Riwayat buku tidak ditemukan.');
+    }
+
+    if (! $item->isDendaLunas()) {
+        return back()->with(
+            'error',
+            'Buku ini tidak bisa dihapus karena dendanya belum lunas.'
+        );
+    }
+
+    $item->delete();
+
+    return back()->with('success', 'Riwayat buku berhasil dihapus.');
+}
+
+/**
+ * Hapus beberapa transaksi buku terpilih.
+ * Buku dengan denda belum lunas dilewati secara individual.
+ */
+
+/**
+ * Hapus beberapa transaksi buku terpilih.
+ * Buku dengan denda belum lunas dilewati secara individual.
+ */
+public function destroySelected(Request $request): RedirectResponse
+{
+    $validated = $request->validate([
+        'transaksi_ids' => ['required', 'array', 'min:1'],
+        'transaksi_ids.*' => ['required', 'integer', 'distinct'],
+    ]);
+
+    // Simpan identitas grup sebelum transaksi dihapus.
+    $transaksiAwal = Transaksi::find(
+        (int) $validated['transaksi_ids'][0]
+    );
+
+    $groupKey = $transaksiAwal?->getGroupKeyAttribute();
+
+    $dihapus = 0;
+    $dilewati = 0;
+
+    foreach ($validated['transaksi_ids'] as $id) {
+        $item = Transaksi::find((int) $id);
+
+        if (! $item || $item->status !== 'dikembalikan') {
+            continue;
+        }
+
+        if (! $item->isDendaLunas()) {
+            $dilewati++;
+            continue;
+        }
+
+        $item->delete();
+        $dihapus++;
+    }
+
+    $pesan = "{$dihapus} riwayat buku berhasil dihapus.";
+
+    if ($dilewati > 0) {
+        $pesan .= " {$dilewati} buku dilewati karena dendanya belum lunas.";
+    }
+
+    // Kembali ke detail jika masih ada riwayat pengembalian.
+    if ($groupKey) {
+        $masihAdaRiwayat = $this->resolveGroup($groupKey)
+            ->contains(fn ($item) => $item->status === 'dikembalikan');
+
+        if ($masihAdaRiwayat) {
+            return redirect()
+                ->route('admin.pengembalian.show', ['groupKey' => $groupKey])
+                ->with('success', $pesan);
+        }
+    }
+
+    // Jika seluruh riwayat grup sudah terhapus, kembali ke daftar.
+    return redirect()
+        ->route('admin.pengembalian.index')
+        ->with('success', $pesan);
+}
+
+
 }

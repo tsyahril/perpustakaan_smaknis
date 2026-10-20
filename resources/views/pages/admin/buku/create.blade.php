@@ -1,12 +1,12 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Tambah Buku')
 
 @section('content')
 <div class="max-w-2xl mx-auto space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-gray-800">Tambah Buku</h1>
-        <p class="text-sm text-gray-500">Isi data buku beserta sampulnya.</p>
+        <h1 class="text-xl font-bold text-slate-100">Tambah Buku</h1>
+        <p class="text-sm text-slate-400">Isi data buku beserta sampulnya.</p>
     </div>
 
     @if ($errors->any())
@@ -68,7 +68,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
                 <select name="id_kategori" required
                     class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600">
-                    <option value="">— Pilih Kategori —</option>
+                    <option value="">â€” Pilih Kategori â€”</option>
                     @foreach ($kategoris as $kategori)
                         <option value="{{ $kategori->id }}" {{ old('id_kategori') == $kategori->id ? 'selected' : '' }}>{{ $kategori->nama }}</option>
                     @endforeach
@@ -94,3 +94,4 @@
     </form>
 </div>
 @endsection
+

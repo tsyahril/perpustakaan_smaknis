@@ -1,12 +1,12 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Data Penulis')
 
 @section('content')
 <div class="space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-gray-800">Data Penulis</h1>
-        <p class="text-sm text-gray-500">Daftar penulis dari koleksi buku. Penulis baru otomatis tercatat saat tambah buku.</p>
+        <h1 class="text-xl font-bold text-slate-100">Data Penulis</h1>
+        <p class="text-sm text-slate-400">Daftar penulis dari koleksi buku. Penulis baru otomatis tercatat saat tambah buku.</p>
     </div>
 
     <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -54,3 +54,4 @@
     </div>
 </div>
 @endsection
+

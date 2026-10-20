@@ -1,12 +1,12 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Edit Peminjaman')
 
 @section('content')
 <div class="max-w-2xl mx-auto space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-gray-800">Edit Peminjaman</h1>
-        <p class="text-sm text-gray-500">Ubah data peminjaman buku.</p>
+        <h1 class="text-xl font-bold text-slate-100">Edit Peminjaman</h1>
+        <p class="text-sm text-slate-400">Ubah data peminjaman buku.</p>
     </div>
 
     @if ($errors->any())
@@ -73,3 +73,4 @@
     </div>
 </div>
 @endsection
+

@@ -1,12 +1,12 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Edit Kelas')
 
 @section('content')
 <div class="max-w-2xl mx-auto space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-gray-800">Edit Kelas</h1>
-        <p class="text-sm text-gray-500">Perbarui data kelas <span class="font-semibold">{{ $kelas->nama }}</span>.</p>
+        <h1 class="text-xl font-bold text-slate-100">Edit Kelas</h1>
+        <p class="text-sm text-slate-400">Perbarui data kelas <span class="font-semibold">{{ $kelas->nama }}</span>.</p>
     </div>
 
     @if ($errors->any())
@@ -34,7 +34,7 @@
                 <label class="block text-sm font-medium text-gray-700 mb-1">Tingkat</label>
                 <select name="tingkat" required
                     class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600">
-                    <option value="">— Pilih Tingkat —</option>
+                    <option value="">â€” Pilih Tingkat â€”</option>
                     @foreach (['X', 'XI', 'XII'] as $tingkat)
                         <option value="{{ $tingkat }}" {{ old('tingkat', $kelas->tingkat) === $tingkat ? 'selected' : '' }}>{{ $tingkat }}</option>
                     @endforeach
@@ -54,3 +54,4 @@
     </form>
 </div>
 @endsection
+

@@ -1,12 +1,12 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Tambah Anggota')
 
 @section('content')
 <div class="max-w-2xl mx-auto space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-gray-800">Tambah Anggota</h1>
-        <p class="text-sm text-gray-500">Isi nama, gmail, password, dan role. Siswa wajib pakai kolom kelas, guru wajib pakai kolom bagian.</p>
+        <h1 class="text-xl font-bold text-slate-100">Tambah Anggota</h1>
+        <p class="text-sm text-slate-400">Isi nama, gmail, password, dan role. Siswa wajib pakai kolom kelas, guru wajib pakai kolom bagian.</p>
     </div>
 
     @if ($errors->any())
@@ -77,7 +77,7 @@
                 <option value="auto" {{ $kartuTerpilih === 'auto' ? 'selected' : '' }}>Otomatis dari nama</option>
                 @foreach ($daftarAnggota as $a)
                     <option value="{{ $a->id }}" {{ $kartuTerpilih === (string) $a->id ? 'selected' : '' }}>
-                        {{ $a->nomor_anggota }} — {{ $a->nama }}
+                        {{ $a->nomor_anggota }} â€” {{ $a->nama }}
                     </option>
                 @endforeach
             </select>

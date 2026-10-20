@@ -1,12 +1,12 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Dashboard Guru')
 
 @section('content')
 <div class="space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-gray-800">Dashboard Guru</h1>
-        <p class="text-sm text-gray-500">Selamat datang, {{ $user->name }}.</p>
+        <h1 class="text-xl font-bold text-slate-100">Dashboard Guru</h1>
+        <p class="text-sm text-slate-400">Selamat datang, {{ $user->name }}.</p>
     </div>
 
     <div class="grid md:grid-cols-2 gap-3">
@@ -29,3 +29,4 @@
     </div>
 </div>
 @endsection
+

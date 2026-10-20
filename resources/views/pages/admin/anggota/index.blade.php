@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Kelola Anggota')
 
@@ -6,8 +6,8 @@
 <div class="space-y-4">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
-            <h1 class="text-xl font-bold text-gray-800">Kelola Anggota</h1>
-            <p class="text-sm text-gray-500">Kelola akun admin, pustakawan, guru, dan siswa. Siswa punya kelas, guru punya bagian/jabatan.</p>
+            <h1 class="text-xl font-bold text-slate-100">Kelola Anggota</h1>
+            <p class="text-sm text-slate-400">Kelola akun admin, pustakawan, guru, dan siswa. Siswa punya kelas, guru punya bagian/jabatan.</p>
         </div>
         <a href="{{ route('admin.anggota.create') }}"
             class="inline-flex items-center gap-2 px-4 py-2 bg-blue-700 text-white text-sm font-semibold rounded-lg hover:bg-blue-800">
@@ -31,25 +31,25 @@
     {{-- Ringkasan per role --}}
     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-5 gap-3">
         <a href="{{ route('admin.anggota.index') }}"
-            class="bg-white rounded-lg border p-4 hover:border-blue-400 {{ empty($role) ? 'border-blue-600' : 'border-gray-200' }}">
-            <p class="text-xs text-gray-500">Total Anggota</p>
-            <p class="mt-1 text-2xl font-bold text-gray-800">{{ $counts['total'] ?? 0 }}</p>
+            class="bg-[#0b1d32] rounded-lg border p-4 hover:border-blue-400 {{ empty($role) ? 'border-blue-600' : 'border-slate-700' }}">
+            <p class="text-xs text-slate-400">Total Anggota</p>
+            <p class="mt-1 text-2xl font-bold text-slate-100">{{ $counts['total'] ?? 0 }}</p>
         </a>
         @foreach ([['admin', 'Admin'], ['pustakawan', 'Pustakawan'], ['guru', 'Guru'], ['siswa', 'Siswa']] as [$key, $label])
             <a href="{{ route('admin.anggota.index', ['role' => $key]) }}"
-                class="bg-white rounded-lg border p-4 hover:border-blue-400 {{ ($role ?? '') === $key ? 'border-blue-600' : 'border-gray-200' }}">
-                <p class="text-xs text-gray-500">{{ $label }}</p>
-                <p class="mt-1 text-2xl font-bold text-gray-800">{{ $counts[$key] ?? 0 }}</p>
+                class="bg-[#0b1d32] rounded-lg border p-4 hover:border-blue-400 {{ ($role ?? '') === $key ? 'border-blue-600' : 'border-slate-700' }}">
+                <p class="text-xs text-slate-400">{{ $label }}</p>
+                <p class="mt-1 text-2xl font-bold text-slate-100">{{ $counts[$key] ?? 0 }}</p>
             </a>
         @endforeach
     </div>
 
-    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <form method="GET" action="{{ route('admin.anggota.index') }}" class="flex flex-col md:flex-row gap-2 p-4 border-b border-gray-100">
+    <div class="bg-[#0b1d32] rounded-lg border border-slate-700 overflow-hidden">
+        <form method="GET" action="{{ route('admin.anggota.index') }}" class="flex flex-col md:flex-row gap-2 p-4 border-b border-slate-700/80">
             <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama / gmail / kelas..."
-                class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600">
-            <select name="role" class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600">
-                <option value="">Semua Role</option>
+                class="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg text-slate-100 placeholder:text-slate-500 bg-[#071426] border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-400/30 focus:border-sky-400">
+            <select name="role" class="px-3 py-2 text-sm border border-gray-300 rounded-lg text-slate-100 bg-[#071426] border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-400/30">
+                <option value="" class="bg-[#0b1d32] text-slate-100">Semua Role</option>
                 <option value="admin" {{ $role === 'admin' ? 'selected' : '' }}>Admin</option>
                 <option value="pustakawan" {{ $role === 'pustakawan' ? 'selected' : '' }}>Pustakawan</option>
                 <option value="guru" {{ $role === 'guru' ? 'selected' : '' }}>Guru</option>
@@ -57,14 +57,14 @@
             </select>
             <button type="submit" class="px-4 py-2 text-sm font-semibold bg-gray-800 text-white rounded-lg hover:bg-gray-700">Cari</button>
             @if ($search || $role)
-                <a href="{{ route('admin.anggota.index') }}" class="px-4 py-2 text-sm font-semibold bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 text-center">Reset</a>
+                <a href="{{ route('admin.anggota.index') }}" class="px-4 py-2 text-sm font-semibold bg-slate-800 text-slate-300 rounded-lg hover:bg-slate-700 text-center">Reset</a>
             @endif
         </form>
 
         <div class="overflow-x-auto">
             <table class="min-w-full text-sm">
                 <thead>
-                    <tr class="bg-gray-50 text-gray-500 text-xs border-b border-gray-100">
+                    <tr class="bg-[#142c47] text-slate-400 text-xs border-b border-slate-700/80">
                         <th class="px-4 py-3 text-left font-semibold w-10">No</th>
                         <th class="px-4 py-3 text-left font-semibold">Nama</th>
                         <th class="px-4 py-3 text-left font-semibold">Gmail</th>
@@ -76,19 +76,19 @@
                         <th class="px-4 py-3 text-center font-semibold">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+                <tbody class="divide-y divide-slate-700/70">
                     @forelse ($anggotas as $i => $anggota)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-3 text-gray-400">{{ $anggotas->firstItem() + $i }}</td>
+                        <tr class="hover:bg-[#142c47]">
+                            <td class="px-4 py-3 text-slate-400">{{ $anggotas->firstItem() + $i }}</td>
                             <td class="px-4 py-3">
-                                <p class="font-medium text-gray-800">{{ $anggota->name }}</p>
+                                <p class="font-medium text-slate-100">{{ $anggota->name }}</p>
                             </td>
-                            <td class="px-4 py-3 text-gray-600">{{ $anggota->email }}</td>
+                            <td class="px-4 py-3 text-slate-300">{{ $anggota->email }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-2">
-                                    <span class="text-gray-800">-terbaca-</span>
+                                    <span class="text-slate-100">-terbaca-</span>
                                     <button type="button" onclick="openResetModal({{ $anggota->id }})"
-                                        class="px-2 py-1 text-xs font-medium text-gray-600 border border-gray-300 rounded hover:bg-gray-100">Reset</button>
+                                        class="px-2 py-1 text-xs font-medium text-slate-300 border border-gray-300 rounded hover:bg-slate-800">Reset</button>
                                 </div>
                             </td>
                             <td class="px-4 py-3">
@@ -99,25 +99,25 @@
                                     {{ $anggota->aksesLabel() }}
                                 </span>
                             </td>
-                            <td class="px-4 py-3 text-gray-700">
+                            <td class="px-4 py-3 text-slate-200">
                                 {{ $anggota->kelas ?: '-' }}
                             </td>
-                            <td class="px-4 py-3 text-gray-600">
+                            <td class="px-4 py-3 text-slate-300">
                                 @if ($anggota->anggota)
                                     <p class="font-mono text-xs">{{ $anggota->anggota->nomor_anggota }}</p>
-                                    <p class="text-xs text-gray-400">{{ $anggota->anggota->nama }}</p>
+                                    <p class="text-xs text-slate-400">{{ $anggota->anggota->nama }}</p>
                                 @else
-                                    <span class="text-gray-300">belum terhubung</span>
+                                    <span class="text-slate-500">belum terhubung</span>
                                 @endif
                             </td>
                             <td class="px-4 py-3 text-center">
                                 @if ($anggota->id_anggota)
                                     <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold
-                                        {{ $anggota->total_pinjam > 0 ? 'bg-blue-100 text-blue-800' : 'bg-gray-100 text-gray-500' }}">
+                                        {{ $anggota->total_pinjam > 0 ? 'bg-blue-100 text-blue-800' : 'bg-slate-800 text-slate-400' }}">
                                         {{ $anggota->total_pinjam }}
                                     </span>
                                 @else
-                                    <span class="text-xs text-gray-300">-</span>
+                                    <span class="text-xs text-slate-500">-</span>
                                 @endif
                             </td>
                             <td class="px-4 py-3">
@@ -136,24 +136,24 @@
 
                         <div id="resetModal-{{ $anggota->id }}" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
                             <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeResetModal({{ $anggota->id }})"></div>
-                            <div class="relative bg-white rounded-lg border border-gray-200 w-full max-w-md p-5">
-                                <h3 class="font-bold text-gray-800">Reset Password</h3>
-                                <p class="text-sm text-gray-500 mt-1">{{ $anggota->name }} ({{ $anggota->email }})</p>
+                            <div class="relative bg-[#0b1d32] rounded-xl border border-slate-700 w-full max-w-md p-5 text-slate-100">
+                                <h3 class="font-bold text-slate-100">Reset Password</h3>
+                                <p class="text-sm text-slate-400 mt-1">{{ $anggota->name }} ({{ $anggota->email }})</p>
                                 <form action="{{ route('admin.anggota.reset-password', $anggota) }}" method="POST" class="mt-4 space-y-3">
                                     @csrf
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">Password Baru</label>
+                                        <label class="block text-xs font-medium text-slate-300 mb-1">Password Baru</label>
                                         <input type="password" name="password" required minlength="8" placeholder="Min. 8 karakter"
-                                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600">
+                                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-slate-100 bg-[#071426] border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-400/30">
                                     </div>
                                     <div>
-                                        <label class="block text-xs font-medium text-gray-600 mb-1">Konfirmasi Password</label>
+                                        <label class="block text-xs font-medium text-slate-300 mb-1">Konfirmasi Password</label>
                                         <input type="password" name="password_confirmation" required minlength="8" placeholder="Ulangi password"
-                                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600">
+                                            class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg text-slate-100 bg-[#071426] border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-400/30">
                                     </div>
                                     <div class="flex justify-end gap-2 pt-1">
                                         <button type="button" onclick="closeResetModal({{ $anggota->id }})"
-                                            class="px-4 py-2 text-sm text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">Batal</button>
+                                            class="px-4 py-2 text-sm text-slate-300 bg-slate-800 rounded-lg hover:bg-slate-700">Batal</button>
                                         <button type="submit"
                                             class="px-4 py-2 text-sm font-semibold text-white bg-blue-700 rounded-lg hover:bg-blue-800">Reset</button>
                                     </div>
@@ -162,7 +162,7 @@
                         </div>
                     @empty
                         <tr>
-                            <td colspan="9" class="px-4 py-10 text-center text-gray-400">Belum ada data anggota.</td>
+                            <td colspan="9" class="px-4 py-10 text-center text-slate-400">Belum ada data anggota.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -170,7 +170,7 @@
         </div>
 
         @if ($anggotas->hasPages())
-            <div class="p-4 border-t border-gray-100">{{ $anggotas->links() }}</div>
+            <div class="p-4 border-t border-slate-700/80">{{ $anggotas->links() }}</div>
         @endif
     </div>
 </div>
@@ -183,3 +183,4 @@
     });
 </script>
 @endsection
+

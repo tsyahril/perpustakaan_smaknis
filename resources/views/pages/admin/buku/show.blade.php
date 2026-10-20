@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Detail Buku')
 
@@ -6,8 +6,8 @@
 <div class="max-w-3xl mx-auto space-y-4">
     <div class="flex items-center justify-between">
         <div>
-            <h1 class="text-xl font-bold text-gray-800">Detail Buku</h1>
-            <p class="text-sm text-gray-500">Informasi lengkap buku.</p>
+            <h1 class="text-xl font-bold text-slate-100">Detail Buku</h1>
+            <p class="text-sm text-slate-400">Informasi lengkap buku.</p>
         </div>
         <div class="flex gap-2">
             <a href="{{ route('admin.buku.index') }}" class="px-4 py-2 text-sm font-semibold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">Kembali</a>
@@ -25,8 +25,8 @@
                 @endif
             </div>
             <div class="flex-1">
-                <h2 class="text-lg font-bold text-gray-800">{{ $buku->judul }}</h2>
-                <p class="text-sm text-gray-500 mt-0.5">{{ $buku->penulis }}</p>
+                <h2 class="text-lg font-bold text-slate-100">{{ $buku->judul }}</h2>
+                <p class="text-sm text-slate-400 mt-0.5">{{ $buku->penulis }}</p>
 
                 <dl class="mt-4 space-y-2 text-sm">
                     <div class="flex gap-2">
@@ -43,7 +43,7 @@
                     </div>
                     <div class="flex gap-2">
                         <dt class="w-28 flex-shrink-0 text-gray-400">Kategori</dt>
-                        <dd class="text-gray-800">{{ $buku->kategori->nama ?? '—' }}</dd>
+                        <dd class="text-gray-800">{{ $buku->kategori->nama ?? 'â€”' }}</dd>
                     </div>
                     <div class="flex gap-2">
                         <dt class="w-28 flex-shrink-0 text-gray-400">Stok</dt>
@@ -62,3 +62,4 @@
     </div>
 </div>
 @endsection
+

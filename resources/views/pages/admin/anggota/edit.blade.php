@@ -1,12 +1,12 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Edit Anggota')
 
 @section('content')
 <div class="max-w-2xl mx-auto space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-gray-800">Edit Anggota</h1>
-        <p class="text-sm text-gray-500">Perbarui data <span class="font-semibold">{{ $anggota->name }}</span>. Kosongkan password jika tidak diubah.</p>
+        <h1 class="text-xl font-bold text-slate-100">Edit Anggota</h1>
+        <p class="text-sm text-slate-400">Perbarui data <span class="font-semibold">{{ $anggota->name }}</span>. Kosongkan password jika tidak diubah.</p>
     </div>
 
     @if ($errors->any())
@@ -78,7 +78,7 @@
                 <option value="" {{ $kartuTerpilih === '' ? 'selected' : '' }}>Tidak terhubung</option>
                 @foreach ($daftarAnggota as $a)
                     <option value="{{ $a->id }}" {{ $kartuTerpilih === (string) $a->id ? 'selected' : '' }}>
-                        {{ $a->nomor_anggota }} — {{ $a->nama }}
+                        {{ $a->nomor_anggota }} â€” {{ $a->nama }}
                     </option>
                 @endforeach
             </select>

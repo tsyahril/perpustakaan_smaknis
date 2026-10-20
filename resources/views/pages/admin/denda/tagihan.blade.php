@@ -1,12 +1,12 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Tagihan Anggota')
 
 @section('content')
 <div class="space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-gray-800">Tagihan: {{ $anggota->nama }}</h1>
-        <p class="text-sm text-gray-500">{{ $anggota->nomor_anggota }} · Total tagihan <strong class="text-red-700">Rp{{ number_format($total, 0, ',', '.') }}</strong></p>
+        <h1 class="text-xl font-bold text-slate-100">Tagihan: {{ $anggota->nama }}</h1>
+        <p class="text-sm text-slate-400">{{ $anggota->nomor_anggota }} Â· Total tagihan <strong class="text-red-700">Rp{{ number_format($total, 0, ',', '.') }}</strong></p>
     </div>
 
     <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
@@ -29,7 +29,7 @@
                             </td>
                             <td class="px-4 py-3 text-center text-gray-600">{{ $r->tanggal_kembali_aktual->format('d/m/Y') }}</td>
                             <td class="px-4 py-3 text-center text-xs text-gray-600">
-                                {{ ucfirst($r->kondisi ?? '-') }} · {{ $r->hari_terlambat }} hari
+                                {{ ucfirst($r->kondisi ?? '-') }} Â· {{ $r->hari_terlambat }} hari
                                 @if ($r->catatan)
                                     <span class="block text-gray-400">{{ $r->catatan }}</span>
                                 @endif
@@ -53,3 +53,4 @@
     <a href="{{ route('admin.denda.index') }}" class="inline-block px-4 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200">Kembali ke Denda</a>
 </div>
 @endsection
+

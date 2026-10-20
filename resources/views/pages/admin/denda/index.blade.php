@@ -1,148 +1,361 @@
+﻿
 @extends('layouts.admin')
 
 @section('title', 'Data Denda')
 
 @section('content')
-<div class="space-y-4">
-    <div>
-        <h1 class="text-xl font-bold text-gray-800">Data Denda</h1>
-        <p class="text-sm text-gray-500">Rincian denda terlambat / rusak / hilang + tagihan per anggota. Ubah tarif di <a href="{{ route('admin.setting-denda.index') }}" class="text-blue-700 hover:underline font-medium">Setting Denda</a>.</p>
-    </div>
+<div class="space-y-6">
 
-    @if (session('success'))
-        <div class="px-4 py-3 rounded-lg bg-green-50 border border-green-200 text-sm text-green-700">{{ session('success') }}</div>
-    @endif
-
-    <div class="grid md:grid-cols-3 gap-4">
-        <div class="bg-white rounded-lg border border-gray-200 p-6">
-            <p class="text-sm text-gray-500 mb-1">Total Denda Keseluruhan</p>
-            <p class="text-2xl font-bold text-gray-800">Rp{{ number_format($grandTotal, 0, ',', '.') }}</p>
-        </div>
-        <div class="bg-white rounded-lg border border-gray-200 p-6">
-            <p class="text-sm text-gray-500 mb-1">Jumlah Transaksi Denda</p>
-            <p class="text-2xl font-bold text-gray-800">{{ $dendas->total() }}</p>
-        </div>
-        <div class="bg-white rounded-lg border border-gray-200 p-6">
-            <p class="text-sm text-gray-500 mb-1">Rata-rata Denda</p>
-            <p class="text-2xl font-bold text-gray-800">
-                @if ($dendas->total() > 0)
-                    Rp{{ number_format($grandTotal / max($dendas->total(), 1), 0, ',', '.') }}
-                @else
-                    Rp0
-                @endif
+    {{-- Header --}}
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+            <h1 class="text-2xl font-bold text-slate-100">Data Denda</h1>
+            <p class="text-sm text-slate-400 mt-1">
+                Kelola data denda dan pembayaran anggota perpustakaan.
             </p>
         </div>
+
+        <a href="{{ route('admin.setting-denda.index') }}"
+           class="inline-flex items-center justify-center px-4 py-2.5 rounded-xl
+                  bg-blue-700 text-white text-sm font-semibold
+                  hover:bg-blue-800 transition">
+            Setting Denda
+        </a>
+    </div>
+
+    {{-- Notifikasi --}}
+    @if (session('success'))
+        <div class="p-4 rounded-xl bg-green-50 border border-green-200
+                    text-sm text-green-700">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    {{-- Ringkasan --}}
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4">
+
+        <div class="bg-[#0b1d32] rounded-2xl border border-slate-700 p-5 shadow-sm">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <p class="text-sm text-slate-400">Total Denda Keseluruhan</p>
+                    <p class="text-2xl font-bold text-slate-100 mt-2">
+                        Rp{{ number_format($grandTotal, 0, ',', '.') }}
+                    </p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-red-50 text-red-600
+                            flex items-center justify-center text-xl font-bold">
+                    Rp
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-[#0b1d32] rounded-2xl border border-slate-700 p-5 shadow-sm">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <p class="text-sm text-slate-400">Jumlah Transaksi Denda</p>
+                    <p class="text-2xl font-bold text-slate-100 mt-2">
+                        {{ number_format($dendas->total(), 0, ',', '.') }}
+                    </p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600
+                            flex items-center justify-center text-xl">
+                    #
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-[#0b1d32] rounded-2xl border border-slate-700 p-5 shadow-sm">
+            <div class="flex items-center justify-between gap-3">
+                <div>
+                    <p class="text-sm text-slate-400">Rata-rata Denda</p>
+                    <p class="text-2xl font-bold text-slate-100 mt-2">
+                        @if ($dendas->total() > 0)
+                            Rp{{ number_format($grandTotal / $dendas->total(), 0, ',', '.') }}
+                        @else
+                            Rp0
+                        @endif
+                    </p>
+                </div>
+                <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600
+                            flex items-center justify-center text-xl">
+                    %
+                </div>
+            </div>
+        </div>
+
     </div>
 
     {{-- Tagihan per anggota --}}
-    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <div class="px-4 py-3 border-b border-gray-100">
-            <h2 class="font-semibold text-gray-800 text-sm">Tagihan per Anggota</h2>
-            <p class="text-xs text-gray-500">Klik nama untuk melihat riwayat denda apa saja yang dia dapat.</p>
+    <div class="bg-[#0b1d32] rounded-2xl border border-slate-700 shadow-sm overflow-hidden">
+
+        <div class="px-5 py-4 border-b border-slate-700/80">
+            <h2 class="text-base font-bold text-slate-100">
+                Tagihan per Anggota
+            </h2>
+            <p class="text-sm text-slate-400 mt-1">
+                Pilih nama anggota untuk melihat riwayat seluruh tagihannya.
+            </p>
         </div>
+
         <div class="overflow-x-auto">
             <table class="min-w-full text-sm">
                 <thead>
-                    <tr class="bg-gray-50 text-gray-500 text-xs border-b border-gray-100">
-                        <th class="px-4 py-2 text-left font-semibold">Anggota</th>
-                        <th class="px-4 py-2 text-center font-semibold">Jumlah Kasus</th>
-                        <th class="px-4 py-2 text-right font-semibold">Terlambat</th>
-                        <th class="px-4 py-2 text-right font-semibold">Kondisi</th>
-                        <th class="px-4 py-2 text-right font-semibold">Total Tagihan</th>
+                    <tr class="bg-[#142c47] text-slate-400 text-xs uppercase tracking-wide">
+                        <th class="px-5 py-4 text-left font-semibold">Anggota</th>
+                        <th class="px-5 py-4 text-center font-semibold">Kasus</th>
+                        <th class="px-5 py-4 text-right font-semibold">Terlambat</th>
+                        <th class="px-5 py-4 text-right font-semibold">Kondisi</th>
+                        <th class="px-5 py-4 text-right font-semibold">Total Tagihan</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-gray-100">
+
+                <tbody class="divide-y divide-slate-700/70">
                     @forelse ($tagihan as $t)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-2">
-                                <a href="{{ route('admin.denda.tagihan', $t->anggota_id) }}" class="font-medium text-blue-700 hover:underline">{{ $t->anggota->nama ?? '-' }}</a>
-                                <p class="text-xs text-gray-400">{{ $t->anggota->nomor_anggota ?? '' }}</p>
+                        <tr class="hover:bg-[#142c47] transition">
+                            <td class="px-5 py-4">
+                                <a href="{{ route('admin.denda.tagihan', $t->anggota_id) }}"
+                                   class="font-semibold text-slate-100 hover:text-blue-700">
+                                    {{ $t->anggota->nama ?? '-' }}
+                                </a>
+                                <p class="text-xs text-slate-400 mt-1">
+                                    {{ $t->anggota->nomor_anggota ?? '-' }}
+                                </p>
                             </td>
-                            <td class="px-4 py-2 text-center">{{ $t->jumlah }}</td>
-                            <td class="px-4 py-2 text-right text-gray-600">Rp{{ number_format($t->total_terlambat, 0, ',', '.') }}</td>
-                            <td class="px-4 py-2 text-right text-gray-600">Rp{{ number_format($t->total_kondisi, 0, ',', '.') }}</td>
-                            <td class="px-4 py-2 text-right font-semibold text-red-700">Rp{{ number_format($t->total, 0, ',', '.') }}</td>
-                        </tr>
-                    @empty
-                        <tr><td colspan="5" class="px-4 py-6 text-center text-gray-400 text-sm">Belum ada tagihan.</td></tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
 
-    <div class="bg-white rounded-lg border border-gray-200 overflow-hidden">
-        <form method="GET" action="{{ route('admin.denda.index') }}" class="grid md:grid-cols-4 gap-2 p-4 border-b border-gray-100">
-            <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama anggota / judul buku..."
-                class="px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600 focus:border-blue-600">
-            <select name="jenis" class="px-3 py-2 text-sm border border-gray-300 rounded-lg">
-                <option value="">Semua jenis denda</option>
-                <option value="terlambat" {{ $jenis === 'terlambat' ? 'selected' : '' }}>Terlambat</option>
-                <option value="rusak" {{ $jenis === 'rusak' ? 'selected' : '' }}>Rusak</option>
-                <option value="hilang" {{ $jenis === 'hilang' ? 'selected' : '' }}>Hilang</option>
-            </select>
-            <button type="submit" class="px-4 py-2 text-sm font-semibold bg-gray-800 text-white rounded-lg hover:bg-gray-700">Filter</button>
-            @if ($search || $jenis !== '')
-                <a href="{{ route('admin.denda.index') }}" class="px-4 py-2 text-sm font-semibold bg-gray-100 text-gray-600 rounded-lg hover:bg-gray-200 text-center">Reset</a>
-            @endif
-        </form>
+                            <td class="px-5 py-4 text-center text-slate-300">
+                                {{ $t->jumlah }}
+                            </td>
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full text-sm">
-                <thead>
-                    <tr class="bg-gray-50 text-gray-500 text-xs border-b border-gray-100">
-                        <th class="px-4 py-3 text-left font-semibold w-10">No</th>
-                        <th class="px-4 py-3 text-left font-semibold">Anggota</th>
-                        <th class="px-4 py-3 text-left font-semibold">Buku</th>
-                        <th class="px-4 py-3 text-center font-semibold">Kondisi / Telat</th>
-                        <th class="px-4 py-3 text-right font-semibold">Rincian Denda</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                    @forelse ($dendas as $i => $denda)
-                        <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-3 text-gray-400">{{ $dendas->firstItem() + $i }}</td>
-                            <td class="px-4 py-3">
-                                <a href="{{ route('admin.denda.tagihan', $denda->anggota_id) }}" class="font-medium text-gray-800 hover:text-blue-700 hover:underline">{{ $denda->anggota->nama }}</a>
-                                <p class="text-xs text-gray-400">{{ $denda->anggota->nomor_anggota }}</p>
+                            <td class="px-5 py-4 text-right text-slate-300 whitespace-nowrap">
+                                Rp{{ number_format($t->total_terlambat, 0, ',', '.') }}
                             </td>
-                            <td class="px-4 py-3">
-                                <p class="font-medium text-gray-800">{{ $denda->buku->judul }}</p>
-                                <p class="text-xs text-gray-400">Kembali: {{ $denda->tanggal_kembali_aktual->format('d/m/Y') }}</p>
+
+                            <td class="px-5 py-4 text-right text-slate-300 whitespace-nowrap">
+                                Rp{{ number_format($t->total_kondisi, 0, ',', '.') }}
                             </td>
-                            <td class="px-4 py-3 text-center">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {{ $denda->kondisi === 'baik' ? 'bg-green-100 text-green-800' : ($denda->kondisi === 'rusak' ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800') }}">
-                                    {{ ucfirst($denda->kondisi ?? 'baik') }}
-                                </span>
-                                <span class="block mt-1 text-xs text-gray-500">{{ $denda->hari_terlambat }} hari telat</span>
-                            </td>
-                            <td class="px-4 py-3 text-right text-xs space-y-0.5">
-                                <p class="text-gray-500">Terlambat: Rp{{ number_format($denda->denda_terlambat, 0, ',', '.') }}</p>
-                                <p class="text-gray-500">Kondisi: Rp{{ number_format($denda->denda_kondisi, 0, ',', '.') }}</p>
-                                <p class="font-bold text-red-700">Total: Rp{{ number_format($denda->denda, 0, ',', '.') }}</p>
-                                <a href="{{ route('admin.denda.show', $denda) }}" class="text-blue-700 hover:underline">Detail →</a>
-                                @if ($denda->denda_dibayar)
-                                    <p class="text-xs text-green-600 font-semibold">Lunas</p>
-                                @else
-                                    <form action="{{ route('admin.denda.bayar', $denda) }}" method="POST" class="inline mt-1" data-confirm="Tandai denda ini sudah lunas?">
-                                        @csrf
-                                        <button type="submit" class="text-xs font-semibold text-green-700 hover:underline">Tandai Lunas</button>
-                                    </form>
-                                @endif
+
+                            <td class="px-5 py-4 text-right font-bold text-red-700 whitespace-nowrap">
+                                Rp{{ number_format($t->total, 0, ',', '.') }}
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-4 py-10 text-center text-gray-400">Belum ada data denda.</td>
+                            <td colspan="5" class="px-5 py-10 text-center text-slate-400">
+                                Belum ada tagihan anggota.
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
-        @if ($dendas->hasPages())
-            <div class="p-4 border-t border-gray-100">{{ $dendas->links() }}</div>
-        @endif
     </div>
+
+    {{-- Tabel utama --}}
+    <div class="bg-[#0b1d32] rounded-2xl border border-slate-700 shadow-sm overflow-hidden">
+
+        {{-- Judul tabel --}}
+        <div class="px-5 py-4 border-b border-slate-700/80">
+            <h2 class="text-base font-bold text-slate-100">
+                Daftar Transaksi Denda
+            </h2>
+            <p class="text-sm text-slate-400 mt-1">
+                Tekan tombol Detail untuk melihat rincian dan pembayaran denda.
+            </p>
+        </div>
+
+        {{-- Filter dan pencarian --}}
+        <form method="GET"
+              action="{{ route('admin.denda.index') }}"
+              class="p-4 bg-[#102640] border-b border-slate-700/80">
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3">
+
+                <input
+                    type="text"
+                    name="search"
+                    value="{{ $search }}"
+                    placeholder="Cari anggota atau judul buku..."
+                    class="w-full px-4 py-2.5 text-sm bg-[#0b1d32] border border-slate-700
+                           rounded-xl text-slate-100 placeholder:text-slate-500 bg-[#071426] border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-400/30">
+
+                <select
+                    name="jenis"
+                    class="w-full px-4 py-2.5 text-sm bg-[#0b1d32] border border-slate-700
+                           rounded-xl text-slate-100 placeholder:text-slate-500 bg-[#071426] border-slate-600 focus:outline-none focus:ring-2 focus:ring-sky-400/30">
+
+                    <option value="" class="bg-[#0b1d32] text-slate-100">Semua jenis denda</option>
+                    <option value="terlambat" {{ $jenis === 'terlambat' ? 'selected' : '' }}>
+                        Terlambat
+                    </option>
+                    <option value="rusak" {{ $jenis === 'rusak' ? 'selected' : '' }}>
+                        Buku rusak
+                    </option>
+                    <option value="hilang" {{ $jenis === 'hilang' ? 'selected' : '' }}>
+                        Buku hilang
+                    </option>
+                </select>
+
+                <button
+                    type="submit"
+                    class="w-full px-4 py-2.5 bg-blue-700 text-white text-sm
+                           font-semibold rounded-xl hover:bg-blue-800 transition">
+                    Terapkan Filter
+                </button>
+
+                @if ($search || $jenis !== '')
+                    <a
+                        href="{{ route('admin.denda.index') }}"
+                        class="w-full px-4 py-2.5 bg-[#0b1d32] border border-slate-700
+                               text-slate-300 text-sm font-semibold rounded-xl
+                               hover:bg-slate-800 transition text-center">
+                        Reset Filter
+                    </a>
+                @endif
+
+            </div>
+        </form>
+
+        {{-- Tabel --}}
+        <div class="overflow-x-auto">
+            <table class="min-w-full text-sm">
+
+                <thead>
+                    <tr class="bg-[#142c47] text-slate-400 text-xs uppercase tracking-wide">
+                        <th class="px-5 py-4 text-left font-semibold w-16">No.</th>
+                        <th class="px-5 py-4 text-left font-semibold">Anggota</th>
+                        <th class="px-5 py-4 text-left font-semibold">Buku</th>
+                        <th class="px-5 py-4 text-center font-semibold">Kondisi / Telat</th>
+                        <th class="px-5 py-4 text-center font-semibold w-32">Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-slate-700/70">
+
+                    @forelse ($dendas as $i => $denda)
+                        <tr class="hover:bg-blue-50/40 transition">
+
+                            {{-- Nomor --}}
+                            <td class="px-5 py-4 text-slate-400 font-medium">
+                                {{ $dendas->firstItem() + $i }}
+                            </td>
+
+                            {{-- Anggota --}}
+                            <td class="px-5 py-4">
+                                <p class="font-semibold text-slate-100">
+                                    {{ $denda->anggota->nama ?? '-' }}
+                                </p>
+                                <p class="text-xs text-slate-400 mt-1">
+                                    {{ $denda->anggota->nomor_anggota ?? '-' }}
+                                </p>
+                            </td>
+
+                            {{-- Buku --}}
+                            <td class="px-5 py-4">
+                                <p class="font-medium text-slate-100">
+                                    {{ $denda->buku->judul ?? '-' }}
+                                </p>
+                                <p class="text-xs text-slate-400 mt-1">
+                                    Kembali:
+                                    {{ $denda->tanggal_kembali_aktual
+                                        ? $denda->tanggal_kembali_aktual->format('d/m/Y')
+                                        : '-' }}
+                                </p>
+                            </td>
+
+                            {{-- Kondisi dan keterlambatan --}}
+                            <td class="px-5 py-4 text-center">
+                                @php
+                                    $kondisi = strtolower($denda->kondisi ?? 'baik');
+                                @endphp
+
+                                <div class="flex flex-col items-center gap-2">
+
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full
+                                        text-xs font-semibold
+                                        {{ $kondisi === 'baik'
+                                            ? 'bg-green-100 text-green-700'
+                                            : ($kondisi === 'rusak'
+                                                ? 'bg-orange-100 text-orange-700'
+                                                : ($kondisi === 'hilang'
+                                                    ? 'bg-red-100 text-red-700'
+                                                    : 'bg-slate-800 text-slate-200')) }}">
+                                        {{ ucfirst($kondisi) }}
+                                    </span>
+
+                                    @if (($denda->hari_terlambat ?? 0) > 0)
+                                        <span class="text-xs text-amber-700 font-medium">
+                                            {{ $denda->hari_terlambat }} hari terlambat
+                                        </span>
+                                    @else
+                                        <span class="text-xs text-slate-400">
+                                            Tidak terlambat
+                                        </span>
+                                    @endif
+
+                                </div>
+                            </td>
+
+                            {{-- Aksi Detail --}}
+                            <td class="px-5 py-4 text-center">
+                                <a
+                                    href="{{ route('admin.denda.show', $denda) }}"
+                                    class="inline-flex items-center justify-center gap-2
+                                           px-4 py-2 rounded-xl bg-blue-50 text-blue-700
+                                           border border-blue-100 text-xs font-bold
+                                           hover:bg-blue-700 hover:text-white
+                                           hover:border-blue-700 transition whitespace-nowrap">
+                                    Detail
+                                    <span aria-hidden="true">&rarr;</span>
+                                </a>
+                            </td>
+
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="px-5 py-12 text-center">
+                                <div class="flex flex-col items-center gap-2">
+                                    <div class="w-12 h-12 rounded-full bg-slate-800
+                                                flex items-center justify-center text-slate-400 text-xl">
+                                        !
+                                    </div>
+                                    <p class="font-semibold text-slate-300">
+                                        Data denda tidak ditemukan
+                                    </p>
+                                    <p class="text-xs text-slate-400">
+                                        Coba ubah kata pencarian atau filter.
+                                    </p>
+                                </div>
+                            </td>
+                        </tr>
+                    @endforelse
+
+                </tbody>
+            </table>
+        </div>
+
+        {{-- Pagination --}}
+        @if ($dendas->hasPages())
+            <div class="px-5 py-4 border-t border-slate-700/80
+                        flex flex-col sm:flex-row sm:items-center
+                        sm:justify-between gap-3">
+
+                <p class="text-xs text-slate-400">
+                    Menampilkan {{ $dendas->firstItem() ?? 0 }}
+                    sampai {{ $dendas->lastItem() ?? 0 }}
+                    dari {{ $dendas->total() }} transaksi
+                </p>
+
+                <div>
+                    {{ $dendas->links() }}
+                </div>
+
+            </div>
+        @endif
+
+    </div>
+
 </div>
 @endsection
+
+

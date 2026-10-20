@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Kelas')
 
@@ -6,8 +6,8 @@
 <div class="space-y-4">
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
-            <h1 class="text-xl font-bold text-gray-800">Kelas</h1>
-            <p class="text-sm text-gray-500">Kelola daftar kelas untuk data anggota.</p>
+            <h1 class="text-xl font-bold text-slate-100">Kelas</h1>
+            <p class="text-sm text-slate-400">Kelola daftar kelas untuk data anggota.</p>
         </div>
         <a href="{{ route('admin.kelas.create') }}"
             class="inline-flex items-center gap-2 px-4 py-2 bg-blue-700 text-white text-sm font-semibold rounded-lg hover:bg-blue-800">
@@ -56,7 +56,7 @@
                             <td class="px-4 py-3 text-gray-400">{{ $kelas->firstItem() + $i }}</td>
                             <td class="px-4 py-3 font-medium text-gray-800">{{ $item->nama }}</td>
                             <td class="px-4 py-3 text-gray-600">{{ $item->tingkat }}</td>
-                            <td class="px-4 py-3 text-gray-600">{{ $item->jurusan ?? '—' }}</td>
+                            <td class="px-4 py-3 text-gray-600">{{ $item->jurusan ?? 'â€”' }}</td>
                             <td class="px-4 py-3 text-center text-gray-600">{{ $item->anggotas_count }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center justify-center gap-2">
@@ -86,3 +86,4 @@
     </div>
 </div>
 @endsection
+

@@ -1,12 +1,12 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Tambah Peminjaman')
 
 @section('content')
 <div class="max-w-3xl mx-auto space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-gray-800">Pengajuan Peminjaman</h1>
-        <p class="text-sm text-gray-500">Pilih peminjam, lalu pilih buku.</p>
+        <h1 class="text-xl font-bold text-slate-100">Pengajuan Peminjaman</h1>
+        <p class="text-sm text-slate-400">Pilih peminjam, lalu pilih buku.</p>
     </div>
 
     @if ($errors->any())
@@ -206,7 +206,7 @@
             return BUKUS.find(b => String(b.id) === String(hiddenId.value));
         }
         function detailBuku(b) {
-            const bagian = [b.penulis, b.penerbit ? b.penerbit + (b.tahun ? ' (' + b.tahun + ')' : '') : (b.tahun || '')].filter(Boolean).join(' • ');
+            const bagian = [b.penulis, b.penerbit ? b.penerbit + (b.tahun ? ' (' + b.tahun + ')' : '') : (b.tahun || '')].filter(Boolean).join(' â€¢ ');
             return { bagian, isbn: b.isbn || '-' };
         }
         function updateStok() {
@@ -329,3 +329,4 @@
     });
 </script>
 @endsection
+

@@ -1,12 +1,12 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Edit Kategori')
 
 @section('content')
 <div class="max-w-2xl mx-auto space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-gray-800">Edit Kategori</h1>
-        <p class="text-sm text-gray-500">Perbarui nama kategori.</p>
+        <h1 class="text-xl font-bold text-slate-100">Edit Kategori</h1>
+        <p class="text-sm text-slate-400">Perbarui nama kategori.</p>
     </div>
 
     @if ($errors->any())
@@ -36,3 +36,4 @@
     </form>
 </div>
 @endsection
+

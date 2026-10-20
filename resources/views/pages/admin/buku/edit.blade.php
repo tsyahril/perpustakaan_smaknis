@@ -1,12 +1,12 @@
-@extends('layouts.admin')
+﻿@extends('layouts.admin')
 
 @section('title', 'Edit Buku')
 
 @section('content')
 <div class="max-w-2xl mx-auto space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-gray-800">Edit Buku</h1>
-        <p class="text-sm text-gray-500">Perbarui data <span class="font-medium">{{ $buku->judul }}</span>.</p>
+        <h1 class="text-xl font-bold text-slate-100">Edit Buku</h1>
+        <p class="text-sm text-slate-400">Perbarui data <span class="font-medium">{{ $buku->judul }}</span>.</p>
     </div>
 
     @if ($errors->any())
@@ -99,3 +99,4 @@
     </form>
 </div>
 @endsection
+
