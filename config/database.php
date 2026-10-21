@@ -59,7 +59,9 @@ return [
             'strict' => true,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
-                Pdo\Mysql::ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+                // PDO::MYSQL_ATTR_SSL_CA dipakai supaya tetap jalan di PHP 8.3
+                // (class Pdo\Mysql baru tersedia mulai PHP 8.4).
+                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
             ]) : [],
         ],
 
