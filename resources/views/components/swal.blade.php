@@ -35,8 +35,8 @@
             text: message,
             icon: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#1d4ed8',
-            cancelButtonColor: '#6b7280',
+            confirmButtonColor: '11d4ed8',
+            cancelButtonColor: '16b7280',
             confirmButtonText: 'Ya, lanjutkan',
             cancelButtonText: 'Batal',
         }).then(function (result) {

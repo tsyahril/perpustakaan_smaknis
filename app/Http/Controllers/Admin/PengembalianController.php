@@ -30,8 +30,19 @@ class PengembalianController extends Controller
         return $query->whereKey((int) substr($groupKey, 2))->get();
     }
 
+    /**
+     * Halaman Pengembalian kini memuat dua tab sekaligus:
+     *  - tab=pengajuan : pinjaman aktif menunggu verifikasi (dulu "Request Pengembalian")
+     *  - tab=riwayat   : riwayat buku yang sudah dikembalikan
+     */
     public function index(Request $request): View
     {
+        $tab = $request->query('tab') === 'pengajuan' ? 'pengajuan' : 'riwayat';
+
+        if ($tab === 'pengajuan') {
+            return $this->tabPengajuan($request);
+        }
+
         $namaPeminjam = $request->query('nama_peminjam', '');
         $namaBuku = $request->query('nama_buku', '');
         $kondisi = $request->query('kondisi', ''); // baik | rusak | hilang
@@ -83,8 +94,74 @@ class PengembalianController extends Controller
         $daftarPeminjam = Anggota::where('status', 'aktif')->orderBy('nama')->get(['id', 'nama', 'nomor_anggota']);
         $daftarBuku = Buku::orderBy('judul')->get(['id', 'judul', 'stok']);
 
+        $tab = 'riwayat';
+
         return view('pages.admin.pengembalian.index', compact(
-            'pengembalians', 'namaPeminjam', 'namaBuku', 'kondisi', 'daftarPeminjam', 'daftarBuku'
+            'tab', 'pengembalians', 'namaPeminjam', 'namaBuku', 'kondisi', 'daftarPeminjam', 'daftarBuku'
+        ));
+    }
+
+    /**
+     * Isi tab "Pengajuan": pinjaman aktif (status pinjam) yang menunggu
+     * verifikasi pustakawan. Dikelompokkan per peminjaman.
+     */
+    protected function tabPengajuan(Request $request): View
+    {
+        $tab = 'pengajuan';
+        $namaPeminjam = $request->query('nama_peminjam', '');
+        $namaBuku = $request->query('nama_buku', '');
+
+        $rows = Transaksi::query()
+            ->with(['anggota.kelas', 'buku'])
+            ->where('status', 'pinjam')
+            ->where('status_persetujuan', '!=', 'ditolak')
+            ->when($namaPeminjam !== '', fn ($q) => $q->whereHas('anggota',
+                fn ($a) => $a->where('nama', 'like', "%{$namaPeminjam}%")))
+            ->when($namaBuku !== '', fn ($q) => $q->whereHas('buku',
+                fn ($b) => $b->where('judul', 'like', "%{$namaBuku}%")))
+            ->orderByRaw('tanggal_kembali_rencana IS NULL')
+            ->orderBy('tanggal_kembali_rencana', 'asc')
+            ->get();
+
+        $groups = $rows
+            ->groupBy(fn ($t) => $t->getGroupKeyAttribute())
+            ->map(function ($items) {
+                $items = $items->sortBy('tanggal_kembali_rencana')->values();
+
+                return (object) [
+                    'key' => $items->first()->getGroupKeyAttribute(),
+                    'kode' => $items->first()->kode_peminjaman,
+                    'anggota' => $items->first()->anggota,
+                    'items' => $items,
+                    'jumlah_buku' => $items->count(),
+                    'tanggal_pinjam' => $items->min('tanggal_pinjam'),
+                    'tanggal_kembali_rencana' => $items->pluck('tanggal_kembali_rencana')->filter()->min(),
+                    'terlambat' => (int) $items->max(fn ($i) => $i->hitungHariTerlambat()),
+                ];
+            })
+            ->sortBy(fn ($g) => $g->tanggal_kembali_rencana?->getTimestamp() ?? PHP_INT_MAX)
+            ->values();
+
+        $perPage = 10;
+        $page = max(1, (int) $request->query('page', 1));
+        $requests = new LengthAwarePaginator(
+            $groups->forPage($page, $perPage)->values(),
+            $groups->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        $daftarPeminjam = Anggota::where('status', 'aktif')->orderBy('nama')->get(['id', 'nama', 'nomor_anggota']);
+        $daftarBuku = Buku::orderBy('judul')->get(['id', 'judul', 'stok']);
+
+        $telatCount = Transaksi::where('status', 'pinjam')
+            ->where('status_persetujuan', '!=', 'ditolak')
+            ->whereDate('tanggal_kembali_rencana', '<', Carbon::today())
+            ->count();
+
+        return view('pages.admin.pengembalian.index', compact(
+            'tab', 'requests', 'namaPeminjam', 'namaBuku', 'daftarPeminjam', 'daftarBuku', 'telatCount'
         ));
     }
 

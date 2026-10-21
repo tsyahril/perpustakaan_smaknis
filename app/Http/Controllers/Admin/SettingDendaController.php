@@ -7,18 +7,17 @@ use App\Models\DendaSetting;
 use App\Models\Transaksi;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\View\View;
 
 class SettingDendaController extends Controller
 {
     /**
-     * Halaman setting denda terpisah dari folder denda.
+     * Halaman "Setting Denda" sudah disatukan ke halaman Denda
+     * (tab "Setting"). Rute lama tetap dipertahankan agar tautan lama
+     * tidak rusak, hanya dialihkan ke tab tersebut.
      */
-    public function index(): View
+    public function index(): RedirectResponse
     {
-        $setting = DendaSetting::current();
-
-        return view('pages.admin.setting-denda.index', compact('setting'));
+        return redirect()->route('admin.denda.index', ['tab' => 'setting']);
     }
 
     public function update(Request $request): RedirectResponse
@@ -54,6 +53,8 @@ class SettingDendaController extends Controller
             $pesan .= " Denda pada {$terhitung} riwayat pengembalian dihitung ulang.";
         }
 
-        return back()->with('success', $pesan);
+        return redirect()
+            ->route('admin.denda.index', ['tab' => 'setting'])
+            ->with('success', $pesan);
     }
 }

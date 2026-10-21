@@ -9,16 +9,16 @@
     {{-- Header --}}
     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-            <h1 class="text-2xl font-bold text-slate-100">Detail Denda</h1>
-            <p class="text-sm text-slate-400 mt-1">
+            <h1 class="text-2xl font-bold text-[#2D251E]">Detail Denda</h1>
+            <p class="text-sm text-[#8B7E71] mt-1">
                 Informasi lengkap denda dan status pembayaran transaksi.
             </p>
         </div>
 
         <a href="{{ route('admin.denda.index') }}"
            class="inline-flex items-center justify-center gap-2 px-4 py-2.5
-                  bg-white border border-gray-200 rounded-xl text-sm
-                  font-semibold text-gray-700 hover:bg-gray-50 transition">
+                  bg-white border border-[#E8E1D7] rounded-xl text-sm
+                  font-semibold text-[#4A4038] hover:bg-[#FAF9F7] transition">
             <span aria-hidden="true">&larr;</span>
             Kembali ke Denda
         </a>
@@ -40,11 +40,11 @@
     @endif
 
     {{-- Informasi anggota dan buku --}}
-    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="bg-white rounded-2xl border border-[#E8E1D7] shadow-sm overflow-hidden">
 
-        <div class="px-5 py-4 border-b border-gray-100">
-            <h2 class="font-bold text-slate-100">Informasi Transaksi</h2>
-            <p class="text-sm text-slate-400 mt-1">
+        <div class="px-5 py-4 border-b border-[#F0EAE1]">
+            <h2 class="font-bold text-[#2D251E]">Informasi Transaksi</h2>
+            <p class="text-sm text-[#8B7E71] mt-1">
                 Data anggota dan buku yang terkena denda.
             </p>
         </div>
@@ -52,49 +52,49 @@
         <div class="p-5 grid grid-cols-1 sm:grid-cols-2 gap-6">
 
             <div>
-                <p class="text-xs text-gray-500 mb-1">Nama Anggota</p>
-                <p class="font-semibold text-gray-800">
+                <p class="text-xs text-[#97897B] mb-1">Nama Anggota</p>
+                <p class="font-semibold text-[#332B24]">
                     {{ $denda->anggota->nama ?? '-' }}
                 </p>
-                <p class="text-xs text-gray-400 mt-1">
+                <p class="text-xs text-[#8B7E71] mt-1">
                     Nomor anggota:
                     {{ $denda->anggota->nomor_anggota ?? '-' }}
                 </p>
             </div>
 
             <div>
-                <p class="text-xs text-gray-500 mb-1">Judul Buku</p>
-                <p class="font-semibold text-gray-800">
+                <p class="text-xs text-[#97897B] mb-1">Judul Buku</p>
+                <p class="font-semibold text-[#332B24]">
                     {{ $denda->buku->judul ?? '-' }}
                 </p>
-                <p class="text-xs text-gray-400 mt-1">
+                <p class="text-xs text-[#8B7E71] mt-1">
                     Penulis: {{ $denda->buku->penulis ?? '-' }}
                 </p>
             </div>
 
             <div>
-                <p class="text-xs text-gray-500 mb-1">Tanggal Peminjaman</p>
-                <p class="font-medium text-gray-800">
+                <p class="text-xs text-[#97897B] mb-1">Tanggal Peminjaman</p>
+                <p class="font-medium text-[#332B24]">
                     {{ $denda->tanggal_pinjam?->format('d/m/Y') ?? '-' }}
                 </p>
             </div>
 
             <div>
-                <p class="text-xs text-gray-500 mb-1">Tanggal Kembali Rencana</p>
-                <p class="font-medium text-gray-800">
+                <p class="text-xs text-[#97897B] mb-1">Tanggal Kembali Rencana</p>
+                <p class="font-medium text-[#332B24]">
                     {{ $denda->tanggal_kembali_rencana?->format('d/m/Y') ?? 'Belum ditentukan' }}
                 </p>
             </div>
 
             <div>
-                <p class="text-xs text-gray-500 mb-1">Tanggal Kembali Aktual</p>
-                <p class="font-medium text-gray-800">
+                <p class="text-xs text-[#97897B] mb-1">Tanggal Kembali Aktual</p>
+                <p class="font-medium text-[#332B24]">
                     {{ $denda->tanggal_kembali_aktual?->format('d/m/Y') ?? 'Belum tercatat' }}
                 </p>
             </div>
 
             <div>
-                <p class="text-xs text-gray-500 mb-1">Kondisi Buku</p>
+                <p class="text-xs text-[#97897B] mb-1">Kondisi Buku</p>
 
                 @php
                     $kondisi = strtolower($denda->kondisi ?? 'belum dicatat');
@@ -107,7 +107,7 @@
                             ? 'bg-orange-100 text-orange-700'
                             : ($kondisi === 'hilang'
                                 ? 'bg-red-100 text-red-700'
-                                : 'bg-gray-100 text-gray-600')) }}">
+                                : 'bg-[#F7F4EF] text-[#7C6F62]')) }}">
                     {{ ucfirst($kondisi) }}
                 </span>
             </div>
@@ -116,11 +116,11 @@
     </div>
 
     {{-- Rincian denda --}}
-    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="bg-white rounded-2xl border border-[#E8E1D7] shadow-sm overflow-hidden">
 
-        <div class="px-5 py-4 border-b border-gray-100">
-            <h2 class="font-bold text-slate-100">Rincian Denda</h2>
-            <p class="text-sm text-slate-400 mt-1">
+        <div class="px-5 py-4 border-b border-[#F0EAE1]">
+            <h2 class="font-bold text-[#2D251E]">Rincian Denda</h2>
+            <p class="text-sm text-[#8B7E71] mt-1">
                 Rincian biaya berdasarkan keterlambatan dan kondisi buku.
             </p>
         </div>
@@ -129,42 +129,42 @@
 
             <div class="flex items-center justify-between gap-4">
                 <div>
-                    <p class="font-medium text-gray-700">Keterlambatan</p>
-                    <p class="text-xs text-gray-400 mt-1">
+                    <p class="font-medium text-[#4A4038]">Keterlambatan</p>
+                    <p class="text-xs text-[#8B7E71] mt-1">
                         Jumlah hari melewati tanggal pengembalian.
                     </p>
                 </div>
-                <p class="font-semibold text-gray-800 text-right">
+                <p class="font-semibold text-[#332B24] text-right">
                     {{ max(0, (int) ($denda->hari_terlambat ?? 0)) }} hari
                 </p>
             </div>
 
             <div class="flex items-center justify-between gap-4">
-                <p class="font-medium text-gray-700">Denda Keterlambatan</p>
-                <p class="font-semibold text-gray-800 text-right whitespace-nowrap">
+                <p class="font-medium text-[#4A4038]">Denda Keterlambatan</p>
+                <p class="font-semibold text-[#332B24] text-right whitespace-nowrap">
                     Rp{{ number_format($denda->denda_terlambat ?? 0, 0, ',', '.') }}
                 </p>
             </div>
 
             <div class="flex items-center justify-between gap-4">
-                <p class="font-medium text-gray-700">Denda Kondisi Buku</p>
-                <p class="font-semibold text-gray-800 text-right whitespace-nowrap">
+                <p class="font-medium text-[#4A4038]">Denda Kondisi Buku</p>
+                <p class="font-semibold text-[#332B24] text-right whitespace-nowrap">
                     Rp{{ number_format($denda->denda_kondisi ?? 0, 0, ',', '.') }}
                 </p>
             </div>
 
             @if ($denda->catatan)
-                <div class="p-3 rounded-xl bg-gray-50 border border-gray-100">
-                    <p class="text-xs text-gray-500 mb-1">Catatan</p>
-                    <p class="text-sm text-gray-700">{{ $denda->catatan }}</p>
+                <div class="p-3 rounded-xl bg-[#FAF9F7] border border-[#F0EAE1]">
+                    <p class="text-xs text-[#97897B] mb-1">Catatan</p>
+                    <p class="text-sm text-[#4A4038]">{{ $denda->catatan }}</p>
                 </div>
             @endif
 
-            <div class="border-t border-gray-100 pt-4 flex items-center
+            <div class="border-t border-[#F0EAE1] pt-4 flex items-center
                         justify-between gap-4">
                 <div>
-                    <p class="font-bold text-gray-800">Total Denda</p>
-                    <p class="text-xs text-gray-500 mt-1">
+                    <p class="font-bold text-[#332B24]">Total Denda</p>
+                    <p class="text-xs text-[#97897B] mt-1">
                         Total tagihan transaksi ini.
                     </p>
                 </div>
@@ -177,11 +177,11 @@
     </div>
 
     {{-- Status dan pembayaran --}}
-    <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+    <div class="bg-white rounded-2xl border border-[#E8E1D7] shadow-sm overflow-hidden">
 
-        <div class="px-5 py-4 border-b border-gray-100">
-            <h2 class="font-bold text-slate-100">Status Pembayaran</h2>
-            <p class="text-sm text-slate-400 mt-1">
+        <div class="px-5 py-4 border-b border-[#F0EAE1]">
+            <h2 class="font-bold text-[#2D251E]">Status Pembayaran</h2>
+            <p class="text-sm text-[#8B7E71] mt-1">
                 Status pembayaran untuk transaksi ini.
             </p>
         </div>
@@ -198,12 +198,12 @@
                         Lunas
                     </span>
 
-                    <p class="text-sm text-gray-500 mt-2">
+                    <p class="text-sm text-[#97897B] mt-2">
                         Pembayaran telah dicatat.
                     </p>
 
                     @if ($denda->denda_dibayar_pada)
-                        <p class="text-xs text-gray-400 mt-1">
+                        <p class="text-xs text-[#8B7E71] mt-1">
                             Tanggal pembayaran:
                             {{ $denda->denda_dibayar_pada->format('d/m/Y H:i') }}
                         </p>
@@ -216,7 +216,7 @@
                         Belum Lunas
                     </span>
 
-                    <p class="text-sm text-gray-500 mt-2">
+                    <p class="text-sm text-[#97897B] mt-2">
                         Denda ini belum ditandai sebagai lunas.
                     </p>
                 @endif
@@ -226,8 +226,8 @@
 
                 <a href="{{ route('admin.denda.tagihan', $denda->anggota_id) }}"
                    class="inline-flex items-center justify-center px-4 py-2.5
-                          rounded-xl bg-gray-100 text-gray-700 text-sm
-                          font-semibold hover:bg-gray-200 transition">
+                          rounded-xl bg-[#F7F4EF] text-[#4A4038] text-sm
+                          font-semibold hover:bg-[#F0EAE1] transition">
                     Riwayat Tagihan
                 </a>
 
