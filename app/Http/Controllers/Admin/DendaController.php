@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Anggota;
+use App\Models\DendaSetting;
 use App\Models\Transaksi;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -11,8 +12,26 @@ use Illuminate\View\View;
 
 class DendaController extends Controller
 {
-    public function index(Request $request): View
+    /**
+     * Halaman Denda kini memuat dua tab:
+     *  - tab=setting : pengaturan tarif (dulu halaman "Setting Denda", khusus admin)
+     *  - tab=tagihan : data denda & tagihan anggota (default)
+     */
+    public function index(Request $request): View|RedirectResponse
     {
+        $tab = $request->query('tab') === 'setting' ? 'setting' : 'tagihan';
+
+        if ($tab === 'setting') {
+            if (! auth()->user()?->isAdmin()) {
+                return redirect()->route('admin.denda.index');
+            }
+
+            return view('pages.admin.denda.index', [
+                'tab' => 'setting',
+                'setting' => DendaSetting::current(),
+            ]);
+        }
+
         $search = $request->query('search');
         $jenis = $request->query('jenis', ''); // terlambat | rusak | hilang
 
@@ -45,7 +64,7 @@ class DendaController extends Controller
             ->limit(20)
             ->get();
 
-        return view('pages.admin.denda.index', compact('dendas', 'search', 'jenis', 'totalDenda', 'grandTotal', 'tagihan'));
+        return view('pages.admin.denda.index', compact('tab', 'dendas', 'search', 'jenis', 'totalDenda', 'grandTotal', 'tagihan'));
     }
 
     public function show(Transaksi $denda): View

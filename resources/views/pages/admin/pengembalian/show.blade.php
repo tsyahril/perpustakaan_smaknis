@@ -17,14 +17,14 @@
     {{-- Header --}}
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
         <div>
-            <h1 class="text-2xl font-bold text-slate-100">Detail Pengembalian</h1>
-            <p class="text-sm text-slate-400 mt-1">
+            <h1 class="text-2xl font-bold text-[#2D251E]">Detail Pengembalian</h1>
+            <p class="text-sm text-[#8B7E71] mt-1">
                 Kelola riwayat dan status setiap buku secara terpisah.
             </p>
         </div>
 
         <a href="{{ route('admin.pengembalian.index') }}"
-           class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gray-100 text-gray-700 text-sm font-semibold hover:bg-gray-200">
+           class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#F7F4EF] text-[#4A4038] text-sm font-semibold hover:bg-[#F0EAE1]">
             â† Kembali ke Pengembalian
         </a>
     </div>
@@ -44,28 +44,28 @@
 
     {{-- Ringkasan peminjaman --}}
     <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-            <p class="text-xs text-gray-500">Peminjam</p>
-            <p class="font-bold text-gray-800 mt-2">{{ $anggota->nama }}</p>
-            <p class="text-xs text-gray-400 mt-1">{{ $anggota->nomor_anggota }}</p>
+        <div class="bg-white border border-[#E8E1D7] rounded-2xl p-5 shadow-sm">
+            <p class="text-xs text-[#97897B]">Peminjam</p>
+            <p class="font-bold text-[#332B24] mt-2">{{ $anggota->nama }}</p>
+            <p class="text-xs text-[#8B7E71] mt-1">{{ $anggota->nomor_anggota }}</p>
         </div>
 
-        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-            <p class="text-xs text-gray-500">Kode Peminjaman</p>
-            <p class="font-bold text-blue-700 mt-2 font-mono">
+        <div class="bg-white border border-[#E8E1D7] rounded-2xl p-5 shadow-sm">
+            <p class="text-xs text-[#97897B]">Kode Peminjaman</p>
+            <p class="font-bold text-sepia-700 mt-2 font-mono">
                 {{ $first->kode_peminjaman ?? 'TRX-' . $first->id }}
             </p>
         </div>
 
-        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-            <p class="text-xs text-gray-500">Jumlah Buku</p>
-            <p class="text-2xl font-bold text-gray-800 mt-2">{{ $items->count() }}</p>
-            <p class="text-xs text-gray-400">buku dalam riwayat ini</p>
+        <div class="bg-white border border-[#E8E1D7] rounded-2xl p-5 shadow-sm">
+            <p class="text-xs text-[#97897B]">Jumlah Buku</p>
+            <p class="text-2xl font-bold text-[#332B24] mt-2">{{ $items->count() }}</p>
+            <p class="text-xs text-[#8B7E71]">buku dalam riwayat ini</p>
         </div>
 
-        <div class="bg-white border border-gray-200 rounded-2xl p-5 shadow-sm">
-            <p class="text-xs text-gray-500">Total Denda</p>
-            <p class="text-xl font-bold mt-2 {{ $totalDenda > 0 ? 'text-red-600' : 'text-gray-800' }}">
+        <div class="bg-white border border-[#E8E1D7] rounded-2xl p-5 shadow-sm">
+            <p class="text-xs text-[#97897B]">Total Denda</p>
+            <p class="text-xl font-bold mt-2 {{ $totalDenda > 0 ? 'text-red-600' : 'text-[#332B24]' }}">
                 Rp{{ number_format($totalDenda, 0, ',', '.') }}
             </p>
             @if ($totalDenda > 0)
@@ -73,7 +73,7 @@
                     {{ $belumLunas->isNotEmpty() ? 'Ada denda belum lunas' : 'Semua lunas' }}
                 </span>
             @else
-                <span class="inline-block mt-2 text-xs font-semibold px-2.5 py-1 rounded-full bg-gray-100 text-gray-600">
+                <span class="inline-block mt-2 text-xs font-semibold px-2.5 py-1 rounded-full bg-[#F7F4EF] text-[#7C6F62]">
                     Tidak ada denda
                 </span>
             @endif
@@ -81,10 +81,10 @@
     </div>
 
     {{-- Daftar buku --}}
-    <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden">
-        <div class="p-5 border-b border-gray-100">
-            <h2 class="font-bold text-slate-100">Daftar Buku</h2>
-            <p class="text-sm text-slate-400 mt-1">
+    <div class="bg-white border border-[#E8E1D7] rounded-2xl shadow-sm overflow-hidden">
+        <div class="p-5 border-b border-[#F0EAE1]">
+            <h2 class="font-bold text-[#2D251E]">Daftar Buku</h2>
+            <p class="text-sm text-[#8B7E71] mt-1">
                 Periksa kondisi dan denda masing-masing buku.
             </p>
         </div>
@@ -101,7 +101,7 @@
         <div class="overflow-x-auto">
             <table class="min-w-full text-sm">
                 <thead>
-                    <tr class="bg-gray-50 text-gray-500 text-xs uppercase tracking-wide">
+                    <tr class="bg-[#FAF9F7] text-[#97897B] text-xs uppercase tracking-wide">
                         @if ($bisaKelola)
                             <th class="px-4 py-4 text-center">
                                 <input type="checkbox" id="pilihSemuaDetail">
@@ -117,9 +117,9 @@
                     </tr>
                 </thead>
 
-                <tbody class="divide-y divide-gray-100">
+                <tbody class="divide-y divide-[#F0EAE1]">
                     @foreach ($items as $item)
-                        <tr class="hover:bg-gray-50">
+                        <tr class="hover:bg-[#FAF9F7]">
                             @if ($bisaKelola)
                                 <td class="px-4 py-4 text-center align-top">
                                     <input type="checkbox"
@@ -132,20 +132,20 @@
                             @endif
 
                             <td class="px-4 py-4 align-top">
-                                <p class="font-semibold text-gray-800">
+                                <p class="font-semibold text-[#332B24]">
                                     {{ $item->buku->judul }}
                                 </p>
-                                <p class="text-xs text-gray-500 mt-1">
+                                <p class="text-xs text-[#97897B] mt-1">
                                     Penulis: {{ $item->buku->penulis ?? '-' }}
                                 </p>
                                 @if ($item->catatan)
-                                    <p class="text-xs text-gray-400 mt-1">
+                                    <p class="text-xs text-[#8B7E71] mt-1">
                                         Catatan: {{ $item->catatan }}
                                     </p>
                                 @endif
                             </td>
 
-                            <td class="px-4 py-4 text-center text-xs text-gray-600 align-top">
+                            <td class="px-4 py-4 text-center text-xs text-[#7C6F62] align-top">
                                 {{ $item->tanggal_kembali_aktual?->format('d/m/Y') ?? '-' }}
                             </td>
 
@@ -160,7 +160,7 @@
                             </td>
 
                             <td class="px-4 py-4 text-right align-top">
-                                <p class="font-bold text-gray-800">
+                                <p class="font-bold text-[#332B24]">
                                     Rp{{ number_format($item->denda, 0, ',', '.') }}
                                 </p>
 
@@ -169,7 +169,7 @@
                                         {{ $item->isDendaLunas() ? 'Lunas' : 'Belum lunas' }}
                                     </span>
                                 @else
-                                    <span class="inline-flex mt-2 px-2.5 py-1 rounded-full text-xs font-semibold bg-gray-100 text-gray-600">
+                                    <span class="inline-flex mt-2 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#F7F4EF] text-[#7C6F62]">
                                         Tidak ada denda
                                     </span>
                                 @endif
@@ -189,7 +189,7 @@
                                             </button>
                                         </form>
                                     @else
-                                        <span class="text-xs text-gray-400">
+                                        <span class="text-xs text-[#8B7E71]">
                                             Denda belum lunas
                                         </span>
                                     @endif
@@ -202,8 +202,8 @@
         </div>
 
         @if ($bisaKelola)
-            <div class="p-4 border-t border-gray-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <p class="text-xs text-gray-500">
+            <div class="p-4 border-t border-[#F0EAE1] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <p class="text-xs text-[#97897B]">
                     Buku dengan denda belum lunas tidak dapat dipilih untuk dihapus.
                 </p>
 

@@ -12,103 +12,47 @@
     display: none;
 }
 
+/* ===== TABEL - TEMA TERANG SEPIA ===== */
 
-/* ===== TEMA NAVY TABEL - PERBAIKAN ===== */
-
-/* Panel tabel */
-main .bg-white:has(table),
-main .bg-gray-50:has(table),
-main .bg-gray-100:has(table),
-main .bg-slate-50:has(table),
-main .bg-slate-100:has(table) {
-    background-color: #0b1d32 !important;
-    border-color: #263e5b !important;
-}
-
-/* Latar utama tabel */
-main table,
-main table.bg-white,
-main table.bg-gray-50,
-main table.bg-gray-100 {
+main table {
     width: 100%;
-    background-color: #0b1d32 !important;
-    color: #e2e8f0;
-    border-color: #263e5b !important;
+    background-color: #ffffff;
+    color: #3d342c;
     border-collapse: separate;
     border-spacing: 0;
 }
 
-/* Header */
 main table thead,
 main table thead tr,
 main table thead th {
-    background-color: #102640 !important;
-    color: #dbeafe !important;
-    border-color: #304966 !important;
+    background-color: #f7f4ef;
+    color: #744d2a;
+    border-color: #e8e1d7;
 }
 
-/* Baris isi: tidak mengubah background sel badge */
-main table tbody,
 main table tbody tr,
 main table tfoot,
 main table tfoot tr {
-    background-color: #0b1d32 !important;
+    background-color: #ffffff;
 }
 
 main table tbody tr:hover {
-    background-color: #193451 !important;
+    background-color: #faf7f2;
 }
 
-/* Garis tabel */
 main table th,
 main table td {
-    border-color: #304966 !important;
+    border-color: #e8e1d7;
 }
 
-/* Teks sel biasa */
 main table tbody td {
-    color: #e2e8f0;
+    color: #3d342c;
 }
 
-/* Pencarian dan filter */
-main .bg-white:has(table) input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]),
-main .bg-gray-50:has(table) input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]),
-main .bg-gray-100:has(table) input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]),
-main .bg-white:has(table) select,
-main .bg-gray-50:has(table) select,
-main .bg-gray-100:has(table) select {
-    background-color: #071426;
-    color: #e2e8f0;
-    border-color: #304966;
+/* Pencarian dan filter di dalam panel tabel */
+main table thead input:not([type='checkbox']):not([type='radio']):not([type='submit']),
+main table thead select {
+    background-color: #ffffff;
+    color: #3d342c;
+    border-color: #ddd5c9;
 }
-
-main .bg-white:has(table) input::placeholder,
-main .bg-gray-50:has(table) input::placeholder,
-main .bg-gray-100:has(table) input::placeholder {
-    color: #94a3b8;
-}
-
-/* ===== AKHIR TEMA NAVY TABEL ===== */
-
-/* ===== FIX KONTRAS TEKS TABEL ===== */
-
-/* Teks biasa di dalam sel tabel */
-main table tbody td {
-    color: #e2e8f0 !important;
-}
-
-/* Teks gelap dari class Tailwind dibuat terang,
-   kecuali elemen yang memiliki background badge */
-main table tbody td .text-gray-900:not([class*="bg-"]),
-main table tbody td .text-gray-800:not([class*="bg-"]),
-main table tbody td .text-gray-700:not([class*="bg-"]),
-main table tbody td .text-gray-600:not([class*="bg-"]),
-main table tbody td .text-gray-500:not([class*="bg-"]),
-main table tbody td .text-black:not([class*="bg-"]),
-main table tbody td .text-slate-900:not([class*="bg-"]),
-main table tbody td .text-slate-800:not([class*="bg-"]),
-main table tbody td .text-slate-700:not([class*="bg-"]) {
-    color: #e2e8f0 !important;
-}
-
-/* ===== AKHIR FIX KONTRAS TEKS TABEL ===== */

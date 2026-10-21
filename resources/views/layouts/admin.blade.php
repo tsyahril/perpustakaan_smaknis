@@ -7,7 +7,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
-<body class="bg-[#06101f] font-sans antialiased text-white">
+<body class="bg-[#FAF9F7] font-sans antialiased text-[#2D251E]">
     <div class="flex min-h-screen" x-data="{ collapsed: false, mobileOpen: false }">
         <div x-show="mobileOpen" x-transition.opacity @click="mobileOpen = false" style="display: none;" class="fixed inset-0 bg-black bg-opacity-50 z-20 md:hidden"></div>
 

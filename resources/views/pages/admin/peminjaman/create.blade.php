@@ -5,8 +5,8 @@
 @section('content')
 <div class="max-w-3xl mx-auto space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-slate-100">Pengajuan Peminjaman</h1>
-        <p class="text-sm text-slate-400">Pilih peminjam, lalu pilih buku.</p>
+        <h1 class="text-xl font-bold text-[#2D251E]">Pengajuan Peminjaman</h1>
+        <p class="text-sm text-[#8B7E71]">Pilih peminjam, lalu pilih buku.</p>
     </div>
 
     @if ($errors->any())
@@ -22,19 +22,19 @@
         <div class="px-4 py-3 rounded-lg bg-red-50 border border-red-200 text-sm text-red-700">{{ session('error') }}</div>
     @endif
 
-    <form id="formPinjam" action="{{ route('admin.peminjaman.store') }}" method="POST" class="bg-white rounded-lg border border-gray-200 p-6 space-y-5">
+    <form id="formPinjam" action="{{ route('admin.peminjaman.store') }}" method="POST" class="bg-white rounded-lg border border-[#E8E1D7] p-6 space-y-5">
         @csrf
 
         {{-- 1. Peminjam: ketik nama, role & kelas terisi otomatis --}}
         <div class="relative" id="anggotaPicker">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Peminjam <span class="text-red-600">*</span></label>
+            <label class="block text-sm font-medium text-[#4A4038] mb-1">Peminjam <span class="text-red-600">*</span></label>
             <input type="text" id="anggotaKeyword" autocomplete="off" placeholder="Ketik nama anggota..."
-                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600">
+                class="w-full px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-1 focus:ring-sepia-600">
             <input type="hidden" name="anggota_id" id="anggotaId" value="{{ old('anggota_id') }}">
-            <div id="anggotaDropdown" class="hidden absolute z-10 mt-1 w-full max-h-56 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-lg"></div>
+            <div id="anggotaDropdown" class="hidden absolute z-10 mt-1 w-full max-h-56 overflow-y-auto bg-white border border-[#E8E1D7] rounded-lg shadow-lg"></div>
             <div id="anggotaAuto" class="hidden mt-2 flex flex-wrap items-center gap-2 text-xs">
-                <span id="roleBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium bg-blue-100 text-blue-800"></span>
-                <span id="kelasInfo" class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium bg-gray-100 text-gray-600"></span>
+                <span id="roleBadge" class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium bg-sepia-100 text-sepia-800"></span>
+                <span id="kelasInfo" class="inline-flex items-center px-2.5 py-0.5 rounded-full font-medium bg-[#F7F4EF] text-[#7C6F62]"></span>
             </div>
             @error('anggota_id')
                 <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
@@ -44,8 +44,8 @@
         {{-- 2. Buku --}}
         <div>
             <div class="flex items-center justify-between mb-2">
-                <label class="block text-sm font-medium text-gray-700">Buku (maks 5) <span class="text-red-600">*</span></label>
-                <button type="button" id="tambahBuku" class="px-3 py-1.5 text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200 rounded-lg hover:bg-blue-100">+ Tambah</button>
+                <label class="block text-sm font-medium text-[#4A4038]">Buku (maks 5) <span class="text-red-600">*</span></label>
+                <button type="button" id="tambahBuku" class="px-3 py-1.5 text-xs font-semibold text-sepia-700 bg-sepia-50 border border-sepia-200 rounded-lg hover:bg-sepia-100">+ Tambah</button>
             </div>
             <div id="daftarBuku" class="space-y-2"></div>
             @error('buku_ids')
@@ -55,27 +55,27 @@
 
         <div class="grid md:grid-cols-2 gap-4">
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Pinjam <span class="text-red-600">*</span></label>
+                <label class="block text-sm font-medium text-[#4A4038] mb-1">Tanggal Pinjam <span class="text-red-600">*</span></label>
                 <input type="date" name="tanggal_pinjam" value="{{ old('tanggal_pinjam', date('Y-m-d')) }}" required
-                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600">
+                    class="w-full px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-1 focus:ring-sepia-600">
             </div>
             <div>
-                <label class="block text-sm font-medium text-gray-700 mb-1">Tanggal Kembali Rencana (opsional)</label>
+                <label class="block text-sm font-medium text-[#4A4038] mb-1">Tanggal Kembali Rencana (opsional)</label>
                 <input type="date" name="tanggal_kembali_rencana" value="{{ old('tanggal_kembali_rencana') }}" id="tanggalRencanaUmum"
-                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600">
+                    class="w-full px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-1 focus:ring-sepia-600">
             </div>
         </div>
 
-        <label class="flex items-start gap-2 text-sm text-gray-600 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+        <label class="flex items-start gap-2 text-sm text-[#7C6F62] bg-yellow-50 border border-yellow-200 rounded-lg p-3">
             <input type="checkbox" name="ajukan_persetujuan" value="1" checked class="mt-1">
             <span>Buat sebagai <strong>pengajuan</strong> yang harus disetujui pustakawan dulu (stok langsung ditahan). Lepas centang untuk langsung disetujui.</span>
         </label>
 
-        <div class="flex gap-3 pt-2 border-t border-gray-100">
-            <button type="submit" class="px-4 py-2 bg-blue-700 text-white text-sm font-semibold rounded-lg hover:bg-blue-800">
+        <div class="flex gap-3 pt-2 border-t border-[#F0EAE1]">
+            <button type="submit" class="px-4 py-2 bg-sepia-700 text-white text-sm font-semibold rounded-lg hover:bg-sepia-800">
                 Simpan Pengajuan
             </button>
-            <a href="{{ route('admin.peminjaman.index') }}" class="px-4 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200">
+            <a href="{{ route('admin.peminjaman.index') }}" class="px-4 py-2 bg-[#F7F4EF] text-[#4A4038] text-sm font-semibold rounded-lg hover:bg-[#F0EAE1]">
                 Batal
             </a>
         </div>
@@ -117,13 +117,13 @@
         ).slice(0, 20);
         anggotaDropdown.innerHTML = '';
         if (!list.length) {
-            anggotaDropdown.innerHTML = '<p class="px-3 py-2 text-xs text-gray-400">Tidak ada anggota yang cocok.</p>';
+            anggotaDropdown.innerHTML = '<p class="px-3 py-2 text-xs text-[#8B7E71]">Tidak ada anggota yang cocok.</p>';
         } else {
             list.forEach(a => {
                 const b = document.createElement('button');
                 b.type = 'button';
-                b.className = 'flex w-full items-center justify-between gap-2 px-3 py-2 text-sm text-left text-gray-700 hover:bg-blue-50';
-                b.innerHTML = `<span class="font-medium">${a.nama}</span><span class="text-xs text-gray-400">${a.role === 'siswa' ? 'Siswa' : 'Guru'}</span>`;
+                b.className = 'flex w-full items-center justify-between gap-2 px-3 py-2 text-sm text-left text-[#4A4038] hover:bg-sepia-50';
+                b.innerHTML = `<span class="font-medium">${a.nama}</span><span class="text-xs text-[#8B7E71]">${a.role === 'siswa' ? 'Siswa' : 'Guru'}</span>`;
                 b.addEventListener('click', () => {
                     anggotaId.value = a.id;
                     anggotaKeyword.value = a.nama;
@@ -159,21 +159,21 @@
         wrap.innerHTML = `
             <div class="relative flex-1">
                 <input type="text" autocomplete="off" placeholder="Ketik judul buku..."
-                    class="bukuKeyword w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600">
+                    class="bukuKeyword w-full px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-1 focus:ring-sepia-600">
                 <input type="hidden" name="buku_ids[]" class="bukuId" value="${selectedId}">
-                <div class="bukuDropdown hidden absolute z-10 mt-1 w-full max-h-56 overflow-y-auto bg-white border border-gray-200 rounded-lg shadow-lg"></div>
-                <div class="detailBox hidden mt-1.5 rounded-lg border border-gray-200 bg-gray-50 px-3 py-2 text-xs text-gray-600">
+                <div class="bukuDropdown hidden absolute z-10 mt-1 w-full max-h-56 overflow-y-auto bg-white border border-[#E8E1D7] rounded-lg shadow-lg"></div>
+                <div class="detailBox hidden mt-1.5 rounded-lg border border-[#E8E1D7] bg-[#FAF9F7] px-3 py-2 text-xs text-[#7C6F62]">
                     <div class="flex items-center gap-2.5">
                         <span class="detailCover shrink-0"></span>
                         <span class="min-w-0 flex-1 space-y-0.5">
-                            <span class="detailPenulis block font-medium text-gray-800"></span>
-                            <span class="flex items-center justify-between gap-2"><span class="detailIsbn text-gray-400"></span><span class="detailStok"></span></span>
+                            <span class="detailPenulis block font-medium text-[#332B24]"></span>
+                            <span class="flex items-center justify-between gap-2"><span class="detailIsbn text-[#8B7E71]"></span><span class="detailStok"></span></span>
                         </span>
                     </div>
                 </div>
-                <p class="stokInfo mt-1 text-xs text-gray-500"></p>
-                <label class="mt-2 block text-[11px] text-gray-500">Rencana kembali buku ini (kosong = tidak ada rencana)</label>
-                <input type="date" class="rencanaPerBuku mt-1 w-full px-3 py-1.5 text-xs border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600" name="">
+                <p class="stokInfo mt-1 text-xs text-[#97897B]"></p>
+                <label class="mt-2 block text-[11px] text-[#97897B]">Rencana kembali buku ini (kosong = tidak ada rencana)</label>
+                <input type="date" class="rencanaPerBuku mt-1 w-full px-3 py-1.5 text-xs border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-1 focus:ring-sepia-600" name="">
             </div>
             <button type="button" class="hapusBuku px-3 py-2 text-xs font-semibold text-red-600 bg-red-50 border border-red-200 rounded-lg hover:bg-red-100">Hapus</button>
         `;
@@ -196,10 +196,10 @@
         }
         function coverHtml(b, cls) {
             if (b.cover) {
-                return `<img src="${esc(b.cover)}" alt="" loading="lazy" class="${cls} rounded border border-gray-200 object-cover" onerror="this.remove()">`;
+                return `<img src="${esc(b.cover)}" alt="" loading="lazy" class="${cls} rounded border border-[#E8E1D7] object-cover" onerror="this.remove()">`;
             }
             const inisial = esc((b.judul || '?').trim().charAt(0).toUpperCase() || '?');
-            return `<span class="${cls} flex items-center justify-center rounded border border-gray-200 bg-blue-100 text-blue-700 font-bold">${inisial}</span>`;
+            return `<span class="${cls} flex items-center justify-center rounded border border-[#E8E1D7] bg-sepia-100 text-sepia-700 font-bold">${inisial}</span>`;
         }
 
         function bukuTerpilih() {
@@ -252,14 +252,14 @@
                 .map(x => x.b);
             dropdown.innerHTML = '';
             if (!list.length) {
-                dropdown.innerHTML = '<p class="px-3 py-2 text-xs text-gray-400">Tidak ada buku yang cocok.</p>';
+                dropdown.innerHTML = '<p class="px-3 py-2 text-xs text-[#8B7E71]">Tidak ada buku yang cocok.</p>';
             } else {
                 list.forEach(b => {
                     const d = detailBuku(b);
                     const btn = document.createElement('button');
                     btn.type = 'button';
-                    btn.className = 'block w-full px-3 py-2 text-left hover:bg-blue-50';
-                    btn.innerHTML = `<span class="flex items-center gap-2.5"><span class="shrink-0">${coverHtml(b, 'w-8 h-11 text-sm')}</span><span class="min-w-0 flex-1"><span class="flex items-center justify-between gap-2"><span class="truncate font-medium text-sm text-gray-800">${esc(b.judul)}</span><span class="shrink-0 text-xs px-2 py-0.5 rounded-full font-semibold ${b.stok > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}">Stok: ${b.stok}</span></span><span class="block text-xs text-gray-400 truncate">${esc(d.bagian || '')}</span></span></span>`;
+                    btn.className = 'block w-full px-3 py-2 text-left hover:bg-sepia-50';
+                    btn.innerHTML = `<span class="flex items-center gap-2.5"><span class="shrink-0">${coverHtml(b, 'w-8 h-11 text-sm')}</span><span class="min-w-0 flex-1"><span class="flex items-center justify-between gap-2"><span class="truncate font-medium text-sm text-[#332B24]">${esc(b.judul)}</span><span class="shrink-0 text-xs px-2 py-0.5 rounded-full font-semibold ${b.stok > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-600'}">Stok: ${b.stok}</span></span><span class="block text-xs text-[#8B7E71] truncate">${esc(d.bagian || '')}</span></span></span>`;
                     btn.addEventListener('click', () => {
                         const sudahDipilih = Array.from(document.querySelectorAll('.bukuId')).some(el => el !== hiddenId && el.value === String(b.id));
                         if (sudahDipilih) {

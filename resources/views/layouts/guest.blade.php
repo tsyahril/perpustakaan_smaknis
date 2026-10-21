@@ -10,7 +10,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="font-sans antialiased">
-    <main class="min-h-screen w-full bg-[#06101f]">
+    <main class="min-h-screen w-full bg-[#FAF9F7]">
         @yield('content')
     </main>
 </body>

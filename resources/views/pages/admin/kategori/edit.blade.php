@@ -5,8 +5,8 @@
 @section('content')
 <div class="max-w-2xl mx-auto space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-slate-100">Edit Kategori</h1>
-        <p class="text-sm text-slate-400">Perbarui nama kategori.</p>
+        <h1 class="text-xl font-bold text-[#2D251E]">Edit Kategori</h1>
+        <p class="text-sm text-[#8B7E71]">Perbarui nama kategori.</p>
     </div>
 
     @if ($errors->any())
@@ -19,19 +19,19 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.kategori.update', $kategori) }}" method="POST" class="bg-white rounded-lg border border-gray-200 p-6 space-y-4">
+    <form action="{{ route('admin.kategori.update', $kategori) }}" method="POST" class="bg-white rounded-lg border border-[#E8E1D7] p-6 space-y-4">
         @csrf
         @method('PUT')
 
         <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Nama Kategori</label>
+            <label class="block text-sm font-medium text-[#4A4038] mb-1">Nama Kategori</label>
             <input type="text" name="nama" value="{{ old('nama', $kategori->nama) }}" required maxlength="100"
-                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-blue-600">
+                class="w-full px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-1 focus:ring-sepia-600">
         </div>
 
         <div class="flex justify-end gap-2 pt-2">
-            <a href="{{ route('admin.kategori.index') }}" class="px-4 py-2 text-sm font-semibold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">Batal</a>
-            <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-blue-700 rounded-lg hover:bg-blue-800">Update</button>
+            <a href="{{ route('admin.kategori.index') }}" class="px-4 py-2 text-sm font-semibold text-[#7C6F62] bg-[#F7F4EF] rounded-lg hover:bg-[#F0EAE1]">Batal</a>
+            <button type="submit" class="px-4 py-2 text-sm font-semibold text-white bg-sepia-700 rounded-lg hover:bg-sepia-800">Update</button>
         </div>
     </form>
 </div>

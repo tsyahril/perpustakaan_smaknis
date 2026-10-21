@@ -9,18 +9,30 @@ use App\Models\Kelas;
 use App\Models\Transaksi;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class PeminjamanController extends Controller
 {
+    /**
+     * Halaman Peminjaman kini memuat dua tab sekaligus:
+     *  - tab=pengajuan : hasil penggabungan menu "Request Peminjaman"
+     *  - tab=data      : data peminjaman yang sudah disetujui
+     */
     public function index(Request $request): View
     {
+        $tab = $request->query('tab') === 'pengajuan' ? 'pengajuan' : 'data';
+
+        if ($tab === 'pengajuan') {
+            return $this->tabPengajuan($request);
+        }
+
         $search = $request->query('search');
         $status = $request->query('status', '');
 
         // Folder peminjaman hanya berisi pinjaman yang sudah disetujui.
-        // Pengajuan (diajukan/ditolak) ada di folder request-peminjaman.
+        // Pengajuan (diajukan/ditolak) tampil pada tab "Pengajuan".
         $peminjamans = Transaksi::query()
             ->with(['anggota.kelas', 'buku'])
             ->where('status_persetujuan', 'disetujui')
@@ -33,7 +45,79 @@ class PeminjamanController extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        return view('pages.admin.peminjaman.index', compact('peminjamans', 'search', 'status'));
+        return view('pages.admin.peminjaman.index', compact('tab', 'peminjamans', 'search', 'status'));
+    }
+
+    /**
+     * Isi tab "Pengajuan": pengajuan pinjam menunggu persetujuan.
+     * Dikelompokkan per peminjaman (satu kode_peminjaman).
+     */
+    protected function tabPengajuan(Request $request): View
+    {
+        $tab = 'pengajuan';
+        $status = $request->query('status', 'diajukan'); // diajukan | disetujui | ditolak | semua
+        $namaPeminjam = $request->query('nama_peminjam', '');
+
+        $rows = Transaksi::query()
+            ->with(['anggota.kelas', 'buku'])
+            ->when($status !== 'semua' && in_array($status, ['diajukan', 'disetujui', 'ditolak']),
+                fn ($q) => $q->where('status_persetujuan', $status))
+            ->when($namaPeminjam !== '', fn ($q) => $q->whereHas('anggota',
+                fn ($a) => $a->where('nama', 'like', "%{$namaPeminjam}%")))
+            ->orderByRaw("CASE WHEN status_persetujuan = 'diajukan' THEN 0 ELSE 1 END")
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        // Satu kode_peminjaman = satu kali pinjam (bisa lebih dari satu buku).
+        $groups = $rows
+            ->groupBy(fn ($t) => $t->getGroupKeyAttribute())
+            ->map(function ($items) {
+                $items = $items->sortBy('tanggal_pinjam')->values();
+                $first = $items->first();
+
+                return (object) [
+                    'key' => $first->getGroupKeyAttribute(),
+                    'kode' => $first->kode_peminjaman,
+                    'anggota' => $first->anggota,
+                    'items' => $items,
+                    'jumlah_buku' => $items->count(),
+                    'tanggal_pinjam' => $items->min('tanggal_pinjam'),
+                    'tanggal_kembali_rencana' => $items->pluck('tanggal_kembali_rencana')->filter()->min(),
+                    'status_persetujuan' => $first->status_persetujuan,
+                    'catatan' => $first->catatan,
+                ];
+            })
+            ->sortByDesc('tanggal_pinjam')
+            ->values();
+
+        $perPage = 10;
+        $page = max(1, (int) $request->query('page', 1));
+        $requests = new LengthAwarePaginator(
+            $groups->forPage($page, $perPage)->values(),
+            $groups->count(),
+            $perPage,
+            $page,
+            ['path' => $request->url(), 'query' => $request->query()]
+        );
+
+        // Dropdown peminjam: nama anggota yang punya pengajuan.
+        $daftarPeminjam = Anggota::query()
+            ->whereHas('transaksis')
+            ->orderBy('nama')
+            ->pluck('nama');
+
+        // Jumlah pengajuan per status (dihitung per peminjaman, bukan per buku).
+        $counts = [];
+        foreach (['diajukan', 'disetujui', 'ditolak'] as $s) {
+            $counts[$s] = Transaksi::where('status_persetujuan', $s)
+                ->get()
+                ->groupBy(fn ($t) => $t->getGroupKeyAttribute())
+                ->count();
+        }
+
+        return view('pages.admin.peminjaman.index', compact(
+            'tab', 'requests', 'status', 'namaPeminjam', 'daftarPeminjam', 'counts'
+        ));
     }
 
     public function create(): View
@@ -143,9 +227,11 @@ class PeminjamanController extends Controller
                 ? 'Pengajuan peminjaman (' . count($bukuIds) . ' buku) berhasil dibuat, menunggu persetujuan pustakawan.'
                 : 'Peminjaman (' . count($bukuIds) . ' buku) berhasil ditambahkan.';
 
-            $tujuan = $needApproval ? 'admin.request-peminjaman.index' : 'admin.peminjaman.index';
+            $tujuan = $needApproval
+                ? route('admin.peminjaman.index', ['tab' => 'pengajuan'])
+                : route('admin.peminjaman.index');
 
-            return redirect()->route($tujuan)->with('success', $pesan);
+            return redirect()->to($tujuan)->with('success', $pesan);
         });
     }
 

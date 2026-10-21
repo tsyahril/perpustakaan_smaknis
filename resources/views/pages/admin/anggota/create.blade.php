@@ -5,8 +5,8 @@
 @section('content')
 <div class="max-w-2xl mx-auto space-y-4">
     <div>
-        <h1 class="text-xl font-bold text-slate-100">Tambah Anggota</h1>
-        <p class="text-sm text-slate-400">Isi nama, gmail, password, dan role. Siswa wajib pakai kolom kelas, guru wajib pakai kolom bagian.</p>
+        <h1 class="text-xl font-bold text-[#2D251E]">Tambah Anggota</h1>
+        <p class="text-sm text-[#8B7E71]">Isi nama, gmail, password, dan role. Siswa wajib pakai kolom kelas, guru wajib pakai kolom bagian.</p>
     </div>
 
     @if ($errors->any())
@@ -19,61 +19,61 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.anggota.store') }}" method="POST" class="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-4">
+    <form action="{{ route('admin.anggota.store') }}" method="POST" class="bg-white rounded-xl shadow-sm border border-[#E8E1D7] p-6 space-y-4">
         @csrf
 
         <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Nama Lengkap</label>
+            <label class="block text-sm font-semibold text-[#4A4038] mb-1">Nama Lengkap</label>
             <input type="text" name="name" value="{{ old('name') }}" required placeholder="cth: Budi Santoso"
-                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-            <p class="mt-1 text-xs text-gray-400">Kalau nama ini sama dengan kartu anggota yang sudah ada, keduanya otomatis disambung.</p>
+                class="w-full px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-2 focus:ring-sepia-600">
+            <p class="mt-1 text-xs text-[#8B7E71]">Kalau nama ini sama dengan kartu anggota yang sudah ada, keduanya otomatis disambung.</p>
         </div>
 
         <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Gmail</label>
+            <label class="block text-sm font-semibold text-[#4A4038] mb-1">Gmail</label>
             <input type="email" name="email" value="{{ old('email') }}" required placeholder="cth: nama@gmail.com"
-                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                class="w-full px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-2 focus:ring-sepia-600">
         </div>
 
         <div class="grid md:grid-cols-2 gap-4">
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Password</label>
+                <label class="block text-sm font-semibold text-[#4A4038] mb-1">Password</label>
                 <input type="password" name="password" required minlength="8" placeholder="Min. 8 karakter"
-                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    class="w-full px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-2 focus:ring-sepia-600">
             </div>
             <div>
-                <label class="block text-sm font-semibold text-gray-700 mb-1">Konfirmasi Password</label>
+                <label class="block text-sm font-semibold text-[#4A4038] mb-1">Konfirmasi Password</label>
                 <input type="password" name="password_confirmation" required minlength="8" placeholder="Ulangi password"
-                    class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    class="w-full px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-2 focus:ring-sepia-600">
             </div>
         </div>
 
         <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Role</label>
+            <label class="block text-sm font-semibold text-[#4A4038] mb-1">Role</label>
             <select id="role" name="role" required
-                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                class="w-full px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-2 focus:ring-sepia-600">
                 <option value="">-- Pilih Role --</option>
                 <option value="admin" {{ old('role') === 'admin' ? 'selected' : '' }}>Admin</option>
                 <option value="pustakawan" {{ old('role') === 'pustakawan' ? 'selected' : '' }}>Pustakawan</option>
                 <option value="guru" {{ old('role') === 'guru' ? 'selected' : '' }}>Guru</option>
                 <option value="siswa" {{ old('role') === 'siswa' ? 'selected' : '' }}>Siswa</option>
             </select>
-            <p class="mt-1 text-xs text-gray-400">Pustakawan punya akses penuh perpustakaan, sama seperti admin.</p>
+            <p class="mt-1 text-xs text-[#8B7E71]">Pustakawan punya akses penuh perpustakaan, sama seperti admin.</p>
         </div>
 
         {{-- Kolom kelas untuk siswa / bagian untuk guru --}}
-        <div id="kelasWrapper" class="hidden bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <label id="kelasLabel" class="block text-sm font-semibold text-blue-800 mb-1">Kelas</label>
+        <div id="kelasWrapper" class="hidden bg-sepia-50 border border-sepia-200 rounded-lg p-4">
+            <label id="kelasLabel" class="block text-sm font-semibold text-sepia-800 mb-1">Kelas</label>
             <select name="kelas" id="kelasSelect"
-                class="w-full px-3 py-2 text-sm border border-blue-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"></select>
-            <p id="kelasHint" class="mt-1 text-xs text-blue-600"></p>
+                class="w-full px-3 py-2 text-sm border border-sepia-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-sepia-600 bg-white"></select>
+            <p id="kelasHint" class="mt-1 text-xs text-sepia-700"></p>
         </div>
 
         <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-1">Kartu Anggota (opsional)</label>
+            <label class="block text-sm font-semibold text-[#4A4038] mb-1">Kartu Anggota (opsional)</label>
             @php $kartuTerpilih = (string) old('id_anggota', 'auto'); @endphp
             <select name="id_anggota"
-                class="w-full px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                class="w-full px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-2 focus:ring-sepia-600">
                 <option value="auto" {{ $kartuTerpilih === 'auto' ? 'selected' : '' }}>Otomatis dari nama</option>
                 @foreach ($daftarAnggota as $a)
                     <option value="{{ $a->id }}" {{ $kartuTerpilih === (string) $a->id ? 'selected' : '' }}>
@@ -81,14 +81,14 @@
                     </option>
                 @endforeach
             </select>
-            <p class="mt-1 text-xs text-gray-400">Tautan ini dipakai untuk menghitung Total Pinjam pada halaman daftar anggota.</p>
+            <p class="mt-1 text-xs text-[#8B7E71]">Tautan ini dipakai untuk menghitung Total Pinjam pada halaman daftar anggota.</p>
         </div>
 
         <div class="flex justify-end gap-2 pt-2">
             <a href="{{ route('admin.anggota.index') }}"
-                class="px-4 py-2 text-sm font-semibold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200">Batal</a>
+                class="px-4 py-2 text-sm font-semibold text-[#7C6F62] bg-[#F7F4EF] rounded-lg hover:bg-[#F0EAE1]">Batal</a>
             <button type="submit"
-                class="px-4 py-2 text-sm font-semibold text-white bg-blue-700 rounded-lg hover:bg-blue-800">Simpan</button>
+                class="px-4 py-2 text-sm font-semibold text-white bg-sepia-700 rounded-lg hover:bg-sepia-800">Simpan</button>
         </div>
     </form>
 </div>
