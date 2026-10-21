@@ -1,0 +1,43 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Sembunyikan scrollbar tapi tetap bisa di-scroll */
+.no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* ===== TEMA TABEL BIRU GELAP PERPUSTAKAAN ===== */
+table {
+    background-color: #142740 !important;
+    color: #e2e8f0 !important;
+    border-color: #344b68 !important;
+}
+
+table thead th {
+    background-color: #203a59 !important;
+    color: #f1f5f9 !important;
+    border-color: #405875 !important;
+}
+
+table tbody td {
+    background-color: #142740 !important;
+    color: #e2e8f0 !important;
+    border-color: #344b68 !important;
+}
+
+table tbody tr:hover td {
+    background-color: #1c3450 !important;
+}
+
+/* Pertahankan keterbacaan teks tabel */
+table th,
+table td {
+    border-style: solid;
+}
+/* ===== AKHIR TEMA TABEL ===== */

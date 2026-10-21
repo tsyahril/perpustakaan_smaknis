@@ -1,0 +1,94 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Sembunyikan scrollbar tapi tetap bisa di-scroll */
+.no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* ===== TEMA NAVY TABEL - VERSI RAPI ===== */
+
+/* Panel yang membungkus tabel */
+.bg-white:has(table),
+.bg-gray-50:has(table),
+.bg-gray-100:has(table),
+.bg-slate-50:has(table),
+.bg-slate-100:has(table) {
+    background-color: #0b1d32 !important;
+    border-color: #263e5b !important;
+}
+
+/* Permukaan tabel */
+main table {
+    width: 100%;
+    background-color: #0b1d32;
+    color: #e2e8f0;
+    border-color: #263e5b;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+/* Header tabel */
+main table thead th {
+    background-color: #102640 !important;
+    color: #dbeafe !important;
+    border-color: #304966;
+}
+
+/* Baris data: tidak memaksa warna teks elemen di dalamnya */
+main table tbody tr {
+    background-color: #0b1d32;
+}
+
+main table tbody tr:hover {
+    background-color: #193451;
+}
+
+/* Sel tabel: atur garis saja agar warna badge tidak tertimpa */
+main table th,
+main table td {
+    border-color: #304966;
+}
+
+/* Footer dan pagination berbasis tabel */
+main table tfoot tr {
+    background-color: #0b1d32;
+}
+
+/* Input pencarian dan filter, bukan tombol atau badge */
+.bg-white:has(table) input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]),
+.bg-gray-50:has(table) input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]),
+.bg-gray-100:has(table) input:not([type="checkbox"]):not([type="radio"]):not([type="submit"]),
+.bg-white:has(table) select,
+.bg-gray-50:has(table) select,
+.bg-gray-100:has(table) select {
+    background-color: #071426;
+    color: #e2e8f0;
+    border-color: #304966;
+}
+
+.bg-white:has(table) input::placeholder,
+.bg-gray-50:has(table) input::placeholder,
+.bg-gray-100:has(table) input::placeholder {
+    color: #94a3b8;
+}
+
+/* ===== AKHIR TEMA NAVY BERSIH ===== */
+
+
+
+
+
+
+
+/* ===== FIX TEKS GELAP TABEL ===== */
+main table tbody td {
+    color: #e2e8f0;
+}
+/* ===== AKHIR FIX TEKS GELAP TABEL ===== */

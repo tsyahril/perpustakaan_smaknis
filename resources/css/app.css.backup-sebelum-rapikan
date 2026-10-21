@@ -1,0 +1,101 @@
+﻿@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Sembunyikan scrollbar tapi tetap bisa di-scroll */
+.no-scrollbar {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* ===== TEMA NAVY BERSIH UNTUK SEMUA TABEL ===== */
+
+/* Panel utama yang berisi tabel */
+.bg-white:has(table),
+.bg-gray-50:has(table),
+.bg-gray-100:has(table),
+.bg-slate-50:has(table),
+.bg-slate-100:has(table) {
+    background-color: #0b1d32 !important;
+    color: #e2e8f0 !important;
+    border-color: #263e5b !important;
+}
+
+/* Bagian pencarian dan pembungkus langsung di dalam panel tabel */
+.bg-white:has(table) > form,
+.bg-white:has(table) > div,
+.bg-gray-50:has(table) > form,
+.bg-gray-50:has(table) > div,
+.bg-gray-100:has(table) > form,
+.bg-gray-100:has(table) > div {
+    background-color: #0b1d32 !important;
+    border-color: #263e5b !important;
+}
+
+/* Permukaan tabel dan sel data */
+main table,
+main table tbody,
+main table tbody tr,
+main table tbody td,
+main table tfoot,
+main table tfoot tr,
+main table tfoot td {
+    background-color: #0b1d32 !important;
+    color: #e2e8f0 !important;
+    border-color: #263e5b !important;
+}
+
+/* Header tabel */
+main table thead,
+main table thead tr,
+main table thead th {
+    background-color: #102640 !important;
+    color: #dbeafe !important;
+    border-color: #304966 !important;
+}
+
+/* Efek hover */
+main table tbody tr:hover td {
+    background-color: #193451 !important;
+}
+
+/* Warna teks standar di dalam tabel */
+main table .text-gray-900,
+main table .text-gray-800,
+main table .text-gray-700,
+main table .text-gray-600,
+main table .text-gray-500,
+main table .text-black,
+main table .text-slate-900,
+main table .text-slate-800,
+main table .text-slate-700,
+main table .text-slate-600 {
+    color: #e2e8f0 !important;
+}
+
+/* Input pencarian/filter pada panel tabel */
+.bg-white:has(table) input,
+.bg-white:has(table) select,
+.bg-gray-50:has(table) input,
+.bg-gray-50:has(table) select,
+.bg-gray-100:has(table) input,
+.bg-gray-100:has(table) select {
+    background-color: #071426 !important;
+    color: #e2e8f0 !important;
+    border-color: #304966 !important;
+}
+
+.bg-white:has(table) input::placeholder,
+.bg-gray-50:has(table) input::placeholder,
+.bg-gray-100:has(table) input::placeholder {
+    color: #94a3b8 !important;
+}
+
+/* ===== AKHIR TEMA NAVY BERSIH ===== */
+
+
+
