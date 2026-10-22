@@ -67,7 +67,7 @@
                             {{ auth()->user()->name ?? '' }}
                         </p>
                         <p class="mt-1 truncate text-xs text-[#8B7E71]">
-                            {{ auth()->user()->email ?? '' }}
+                            {{ auth()->user()->username ?? auth()->user()->email ?? '' }}
                         </p>
                         <span class="mt-3 inline-flex rounded-lg border border-sepia-300/15 bg-sepia-400/[0.08] px-2.5 py-1 text-xs font-semibold text-sepia-700">
                             {{ auth()->user()?->aksesLabel() ?? '' }}

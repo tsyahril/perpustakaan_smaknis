@@ -77,6 +77,7 @@ class AnggotaDummySeeder extends Seeder
                 ['email' => strtolower($nomor) . '@gmail.com'],
                 [
                     'name' => $nama,
+                    'username' => strtolower($nomor),
                     'password' => $password,
                     'role' => $siswa ? 'siswa' : 'guru',
                     // Satu kolom untuk dua kebutuhan: kelas siswa / bagian guru.

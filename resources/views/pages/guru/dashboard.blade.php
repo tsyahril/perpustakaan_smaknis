@@ -28,7 +28,7 @@
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.2em] text-brand-200">Kartu anggota perpustakaan</p>
                     <h1 class="mt-3 text-2xl font-extrabold tracking-tight sm:text-3xl">{{ $user->name }}</h1>
-                    <p class="mt-1 text-sm text-brand-100">{{ $user->aksesLabel() }}@if ($user->kelas) &middot; {{ $user->kelas }}@endif &middot; {{ $user->email }}</p>
+                    <p class="mt-1 text-sm text-brand-100">{{ $user->aksesLabel() }}@if ($user->kelas) &middot; {{ $user->kelas }}@endif &middot; Username: {{ $user->username }}</p>
                 </div>
                 @if ($anggota)
                     <div class="sm:text-right">

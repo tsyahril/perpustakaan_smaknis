@@ -76,7 +76,7 @@
         <div class="pt-4 pb-1 border-t border-[#E8E1D7]">
             <div class="px-4">
                 <div class="font-medium text-base text-[#332B24]">{{ Auth::user()->name }}</div>
-                <div class="font-medium text-sm text-[#97897B]">{{ Auth::user()->email }}</div>
+                <div class="font-medium text-sm text-[#97897B]">{{ Auth::user()->username ?? Auth::user()->email }}</div>
             </div>
 
             <div class="mt-3 space-y-1">

@@ -18,7 +18,8 @@ use Illuminate\Support\Facades\Hash;
  * 2. 100 anggota dummy, masing-masing sudah punya akun.
  * 3. Penyambungan kartu anggota dari seeder lain yang belum punya akun.
  *
- * Password semua akun: password.
+ * Password semua akun: password. Login seluruh role (admin, pustakawan,
+ * guru, siswa) memakai username, bukan email.
  * Idempoten lewat email / nomor_anggota, jadi aman dijalankan ulang.
  */
 class UserSeeder extends Seeder
@@ -47,11 +48,11 @@ class UserSeeder extends Seeder
     protected function akunSistem(): void
     {
         $users = [
-            ['email' => 'admin@gmail.com', 'name' => 'Admin', 'role' => 'admin'],
-            ['email' => 'pustakawan@gmail.com', 'name' => 'Pustakawan', 'role' => 'pustakawan'],
+            ['email' => 'admin@gmail.com', 'username' => 'admin', 'name' => 'Admin', 'role' => 'admin'],
+            ['email' => 'pustakawan@gmail.com', 'username' => 'pustakawan', 'name' => 'Pustakawan', 'role' => 'pustakawan'],
             // Guru memakai kolom yang sama dengan kelas, isinya bagian/jabatan.
-            ['email' => 'guru@gmail.com', 'name' => 'Guru', 'role' => 'guru', 'kelas' => 'Guru BK'],
-            ['email' => 'siswa@gmail.com', 'name' => 'Siswa', 'role' => 'siswa', 'kelas' => 'X A'],
+            ['email' => 'guru@gmail.com', 'username' => 'guru', 'name' => 'Guru', 'role' => 'guru', 'kelas' => 'Guru BK'],
+            ['email' => 'siswa@gmail.com', 'username' => 'siswa', 'name' => 'Siswa', 'role' => 'siswa', 'kelas' => 'X A'],
         ];
 
         foreach ($users as $user) {
@@ -59,6 +60,7 @@ class UserSeeder extends Seeder
                 ['email' => $user['email']],
                 [
                     'name' => $user['name'],
+                    'username' => $user['username'],
                     'password' => Hash::make('password'),
                     'role' => $user['role'],
                     'kelas' => $user['kelas'] ?? null,
@@ -139,6 +141,7 @@ class UserSeeder extends Seeder
                     ['email' => $role . $i . '@gmail.com'],
                     [
                         'name' => $nama,
+                        'username' => $role . $i,
                         'password' => $password,
                         'role' => $role,
                         'kelas' => $role === 'admin' ? null : $kelasDipakai,
@@ -170,6 +173,7 @@ class UserSeeder extends Seeder
                 ['email' => strtolower($a->nomor_anggota) . '@gmail.com'],
                 [
                     'name' => $a->nama,
+                    'username' => strtolower($a->nomor_anggota),
                     'password' => $password,
                     'role' => $siswa ? 'siswa' : 'guru',
                     'kelas' => $siswa ? ($a->kelas?->nama ?? $bagian) : $bagian,

@@ -23,9 +23,20 @@
             </div>
         </a>
 
-        <div class="hidden items-center gap-2 text-xs text-[#8B7E71] sm:flex">
-            <span class="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.6)]"></span>
-            Sistem Perpustakaan Sekolah
+        <div class="flex items-center gap-3 sm:gap-5">
+            <div class="hidden items-center gap-2 text-xs text-[#8B7E71] sm:flex">
+                <span class="h-2 w-2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.6)]"></span>
+                Sistem Perpustakaan Sekolah
+            </div>
+
+            {{-- Tombol kembali ke landing page (beranda) --}}
+            <a href="{{ url('/') }}"
+               class="group/back inline-flex items-center gap-2 rounded-xl border border-sepia-300/40 bg-[#FFFFFF] px-3.5 py-2.5 text-xs font-bold text-sepia-700 shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-sepia-400/60 hover:bg-sepia-500/10 hover:text-sepia-800 focus:outline-none focus:ring-4 focus:ring-sepia-600/15 sm:px-4">
+                <svg class="h-4 w-4 transition duration-300 group-hover/back:-translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M19 12H5m6-6-6 6 6 6" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Kembali ke Beranda
+            </a>
         </div>
     </header>
 
@@ -166,26 +177,26 @@
                     <form method="POST" action="{{ route('login') }}" class="space-y-5">
                         @csrf
 
-                        <!-- Email -->
+                        <!-- Username -->
                         <div>
-                            <label for="email" class="mb-2 block text-xs font-semibold tracking-wide text-[#3D342C]">
-                                Alamat Email
+                            <label for="username" class="mb-2 block text-xs font-semibold tracking-wide text-[#3D342C]">
+                                Username
                             </label>
 
                             <div class="group relative">
                                 <div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-4 text-[#97897B] transition group-focus-within:text-sepia-700">
                                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                                        <rect x="3" y="5" width="18" height="14" rx="2" stroke-width="1.6"/>
-                                        <path d="m4 7 8 6 8-6" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <circle cx="12" cy="8" r="3.5" stroke-width="1.6"/>
+                                        <path d="M4.5 19.5c1.4-3.2 4.2-5 7.5-5s6.1 1.8 7.5 5" stroke-width="1.6" stroke-linecap="round"/>
                                     </svg>
                                 </div>
 
                                 <input
-                                    id="email"
-                                    type="email"
-                                    name="email"
-                                    value="{{ old('email') }}"
-                                    placeholder="nama@email.com"
+                                    id="username"
+                                    type="text"
+                                    name="username"
+                                    value="{{ old('username') }}"
+                                    placeholder="cth: siswa01"
                                     required
                                     autofocus
                                     autocomplete="username"
@@ -193,7 +204,7 @@
                                 >
                             </div>
 
-                            @error('email')
+                            @error('username')
                                 <p class="mt-2 text-xs leading-5 text-rose-400">{{ $message }}</p>
                             @enderror
                         </div>
@@ -286,7 +297,7 @@
                     </div>
 
                     <p class="mt-5 text-center text-[11px] leading-5 text-[#97897B]">
-                        Gunakan akun yang telah terdaftar untuk mengakses sistem perpustakaan.
+                        Gunakan <span class="font-semibold text-[#7C6F62]">username</span> dan password akunmu untuk mengakses sistem perpustakaan.
                     </p>
                 </div>
 

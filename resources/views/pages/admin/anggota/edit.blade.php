@@ -31,9 +31,17 @@
         </div>
 
         <div>
+            <label class="block text-sm font-semibold text-[#4A4038] mb-1">Username</label>
+            <input type="text" name="username" value="{{ old('username', $anggota->username) }}" required
+                class="w-full px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-2 focus:ring-sepia-600">
+            <p class="mt-1 text-xs text-[#8B7E71]">Dipakai untuk login. Huruf, angka, titik, strip, atau garis bawah; wajib unik.</p>
+        </div>
+
+        <div>
             <label class="block text-sm font-semibold text-[#4A4038] mb-1">Gmail</label>
             <input type="email" name="email" value="{{ old('email', $anggota->email) }}" required
                 class="w-full px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-2 focus:ring-sepia-600">
+            <p class="mt-1 text-xs text-[#8B7E71]">Hanya untuk reset password, bukan untuk login.</p>
         </div>
 
         <div class="grid md:grid-cols-2 gap-4">

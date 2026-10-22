@@ -6,7 +6,7 @@
 <div class="max-w-2xl mx-auto space-y-4">
     <div>
         <h1 class="text-xl font-bold text-[#2D251E]">Tambah Anggota</h1>
-        <p class="text-sm text-[#8B7E71]">Isi nama, gmail, password, dan role. Siswa wajib pakai kolom kelas, guru wajib pakai kolom bagian.</p>
+        <p class="text-sm text-[#8B7E71]">Isi nama, username, gmail, password, dan role. Siswa wajib pakai kolom kelas, guru wajib pakai kolom bagian.</p>
     </div>
 
     @if ($errors->any())
@@ -30,9 +30,17 @@
         </div>
 
         <div>
+            <label class="block text-sm font-semibold text-[#4A4038] mb-1">Username</label>
+            <input type="text" name="username" value="{{ old('username') }}" required placeholder="cth: siswa01"
+                class="w-full px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-2 focus:ring-sepia-600">
+            <p class="mt-1 text-xs text-[#8B7E71]">Dipakai untuk login. Huruf, angka, titik, strip, atau garis bawah; wajib unik.</p>
+        </div>
+
+        <div>
             <label class="block text-sm font-semibold text-[#4A4038] mb-1">Gmail</label>
             <input type="email" name="email" value="{{ old('email') }}" required placeholder="cth: nama@gmail.com"
                 class="w-full px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg focus:outline-none focus:ring-2 focus:ring-sepia-600">
+            <p class="mt-1 text-xs text-[#8B7E71]">Hanya untuk reset password, bukan untuk login.</p>
         </div>
 
         <div class="grid md:grid-cols-2 gap-4">

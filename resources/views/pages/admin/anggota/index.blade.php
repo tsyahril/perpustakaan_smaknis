@@ -46,7 +46,7 @@
 
     <div class="bg-[#FFFFFF] rounded-lg border border-[#E8E1D7] overflow-hidden">
         <form method="GET" action="{{ route('admin.anggota.index') }}" class="flex flex-col md:flex-row gap-2 p-4 border-b border-[#E8E1D7]/80">
-            <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama / gmail / kelas..."
+            <input type="text" name="search" value="{{ $search }}" placeholder="Cari nama / username / kelas..."
                 class="flex-1 px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg text-[#2D251E] placeholder:text-[#97897B] bg-[#FFFFFF] border-[#B9AE9E] focus:outline-none focus:ring-2 focus:ring-sepia-600/30 focus:border-sepia-400">
             <select name="role" class="px-3 py-2 text-sm border border-[#DDD5C9] rounded-lg text-[#2D251E] bg-[#FFFFFF] border-[#B9AE9E] focus:outline-none focus:ring-2 focus:ring-sepia-600/30">
                 <option value="" class="bg-[#FFFFFF] text-[#2D251E]">Semua Role</option>
@@ -67,6 +67,7 @@
                     <tr class="bg-[#F7F4EF] text-[#8B7E71] text-xs border-b border-[#E8E1D7]/80">
                         <th class="px-4 py-3 text-left font-semibold w-10">No</th>
                         <th class="px-4 py-3 text-left font-semibold">Nama</th>
+                        <th class="px-4 py-3 text-left font-semibold">Username</th>
                         <th class="px-4 py-3 text-left font-semibold">Gmail</th>
                         <th class="px-4 py-3 text-left font-semibold">Password</th>
                         <th class="px-4 py-3 text-left font-semibold">Role</th>
@@ -83,6 +84,7 @@
                             <td class="px-4 py-3">
                                 <p class="font-medium text-[#2D251E]">{{ $anggota->name }}</p>
                             </td>
+                            <td class="px-4 py-3 font-medium text-[#2D251E]">{{ $anggota->username }}</td>
                             <td class="px-4 py-3 text-[#6B5E52]">{{ $anggota->email }}</td>
                             <td class="px-4 py-3">
                                 <div class="flex items-center gap-2">
@@ -138,7 +140,7 @@
                             <div class="absolute inset-0 bg-black bg-opacity-50" onclick="closeResetModal({{ $anggota->id }})"></div>
                             <div class="relative bg-[#FFFFFF] rounded-xl border border-[#E8E1D7] w-full max-w-md p-5 text-[#2D251E]">
                                 <h3 class="font-bold text-[#2D251E]">Reset Password</h3>
-                                <p class="text-sm text-[#8B7E71] mt-1">{{ $anggota->name }} ({{ $anggota->email }})</p>
+                                <p class="text-sm text-[#8B7E71] mt-1">{{ $anggota->name }} ({{ $anggota->username }})</p>
                                 <form action="{{ route('admin.anggota.reset-password', $anggota) }}" method="POST" class="mt-4 space-y-3">
                                     @csrf
                                     <div>

@@ -30,6 +30,32 @@ export default {
                     900: '#163a73',
                     950: '#0b1d32',
                 },
+
+                /*
+                 * Satu warna aksen: sepia / coklat khas perpustakaan.
+                 * Dipakai halaman login, admin, dan pustakawan (kelas `sepia-*`).
+                 * Dasar halaman tetap putih dengan netral hangat (`cream-*`).
+                 */
+                sepia: {
+                    50: '#faf7f2',
+                    100: '#f3ede4',
+                    200: '#e7dccd',
+                    300: '#d6c3a9',
+                    400: '#c0a382',
+                    500: '#a88461',
+                    600: '#8b5e34',
+                    700: '#744d2a',
+                    800: '#5c3d22',
+                    900: '#432c19',
+                    950: '#2a1b10',
+                },
+                cream: {
+                    50: '#faf9f7',
+                    100: '#f7f4ef',
+                    200: '#f0eae1',
+                    300: '#e8e1d7',
+                    400: '#ddd5c9',
+                },
             },
             boxShadow: {
                 kartu: '0 1px 2px rgba(11, 29, 50, 0.05), 0 6px 18px -8px rgba(11, 29, 50, 0.12)',

@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -39,9 +40,10 @@ class AnggotaController extends Controller
                 'total_pinjam'
             )
             ->when($search, fn ($q) => $q->where(fn ($w) => $w
-                ->where('name', 'like', '%{$search}%')
-                ->orWhere('email', 'like', '%{$search}%')
-                ->orWhere('kelas', 'like', '%{$search}%')))
+                ->where('name', "like", "%{$search}%")
+                ->orWhere('username', "like", "%{$search}%")
+                ->orWhere('email', "like", "%{$search}%")
+                ->orWhere('kelas', "like", "%{$search}%")))
             ->when($role && in_array($role, User::ROLES), fn ($q) => $q->where('role', $role))
             ->orderBy('name')
             ->paginate(10)
@@ -69,6 +71,7 @@ class AnggotaController extends Controller
 
         $user = new User();
         $user->name = $validated['name'];
+        $user->username = Str::lower(trim($validated['username']));
         $user->email = $validated['email'];
         $user->password = Hash::make($validated['password']);
         $user->role = $validated['role'];
@@ -89,6 +92,7 @@ class AnggotaController extends Controller
         $validated = $request->validate($this->rules($anggota));
 
         $anggota->name = $validated['name'];
+        $anggota->username = Str::lower(trim($validated['username']));
         $anggota->email = $validated['email'];
         $anggota->role = $validated['role'];
         $anggota->kelas = $this->kelasUntuk($validated['role'], $validated['kelas'] ?? null);
@@ -143,6 +147,10 @@ class AnggotaController extends Controller
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'username' => [
+                'required', 'string', 'max:255', 'regex:/^[A-Za-z0-9._-]+$/',
+                Rule::unique('users', 'username')->ignore($anggota?->id),
+            ],
             'email' => [
                 'required', 'string', 'lowercase', 'email', 'max:255',
                 Rule::unique('users', 'email')->ignore($anggota?->id),
