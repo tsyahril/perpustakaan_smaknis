@@ -16,18 +16,32 @@ use App\Http\Controllers\Admin\RequestPengembalianController;
 use App\Http\Controllers\Admin\SettingDendaController;
 use App\Http\Controllers\Guru\DashboardController as GuruDashboardController;
 use App\Http\Controllers\Pustakawan\DashboardController as PustakawanDashboardController;
+use App\Http\Middleware\BagikanSesiMember;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return redirect()->route('login');
-});
+/*
+|--------------------------------------------------------------------------
+| ROUTE KHUSUS ADMIN ONLY
+|--------------------------------------------------------------------------
+*/
+Route::middleware(['auth', 'akses.admin'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
+        // Setting denda - admin only
+        Route::get('setting-denda', [SettingDendaController::class, 'index'])
+            ->name('setting-denda.index');
+
+        Route::put('setting-denda', [SettingDendaController::class, 'update'])
+            ->name('setting-denda.update');
+    });
 
 /*
 |--------------------------------------------------------------------------
 | ROUTE KHUSUS ADMIN
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'akses.admin'])
+Route::middleware(['auth', 'akses.perpus'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -45,6 +59,8 @@ Route::middleware(['auth', 'akses.admin'])
 
         Route::post('/anggota/{anggota}/reset-password', [AnggotaController::class, 'resetPassword'])
             ->name('anggota.reset-password');
+        Route::post('/anggota/{anggota}/toggle-akses', [AnggotaController::class, 'toggleAkses'])
+            ->name('anggota.toggle-akses');
 
         // Master data khusus Admin
         Route::resource('kategori', KategoriController::class)
@@ -119,7 +135,7 @@ Route::middleware(['auth', 'akses.perpus'])
         Route::get('request-pengembalian', [RequestPengembalianController::class, 'index'])
             ->name('request-pengembalian.index');
 
-        // Denda
+        // Denda - admin dan pustakawan
         Route::resource('denda', DendaController::class)
             ->except(['create', 'store', 'edit', 'update', 'destroy'])
             ->parameters(['denda' => 'denda']);
@@ -150,7 +166,7 @@ Route::middleware(['auth', 'akses.perpus'])
 | DASHBOARD GURU
 |--------------------------------------------------------------------------
 */
-Route::middleware('auth')
+Route::middleware(['auth', BagikanSesiMember::class])
     ->prefix('guru')
     ->name('guru.')
     ->group(function () {
@@ -159,4 +175,8 @@ Route::middleware('auth')
             ->name('dashboard');
     });
 
+require __DIR__.'/member.php';
 require __DIR__.'/auth.php';
+
+
+

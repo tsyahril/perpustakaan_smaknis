@@ -13,33 +13,27 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                jakarta: ['"Plus Jakarta Sans"', ...defaultTheme.fontFamily.sans],
             },
-
-            /*
-             * Satu warna aksen: sepia / coklat khas perpustakaan.
-             * Dasar halaman tetap putih dengan netral hangat.
-             */
             colors: {
-                sepia: {
-                    50: '#faf7f2',
-                    100: '#f3ede4',
-                    200: '#e7dccd',
-                    300: '#d6c3a9',
-                    400: '#c0a382',
-                    500: '#a88461',
-                    600: '#8b5e34',
-                    700: '#744d2a',
-                    800: '#5c3d22',
-                    900: '#432c19',
-                    950: '#2a1b10',
+                // Warna utama tampilan anggota; 950 sama dengan navy panel admin.
+                brand: {
+                    50: '#eef6ff',
+                    100: '#d9eaff',
+                    200: '#bcd9ff',
+                    300: '#8ec0ff',
+                    400: '#589dff',
+                    500: '#2f7ef5',
+                    600: '#1a63e0',
+                    700: '#154fb8',
+                    800: '#16418f',
+                    900: '#163a73',
+                    950: '#0b1d32',
                 },
-                cream: {
-                    50: '#faf9f7',
-                    100: '#f7f4ef',
-                    200: '#f0eae1',
-                    300: '#e8e1d7',
-                    400: '#ddd5c9',
-                },
+            },
+            boxShadow: {
+                kartu: '0 1px 2px rgba(11, 29, 50, 0.05), 0 6px 18px -8px rgba(11, 29, 50, 0.12)',
+                'kartu-naik': '0 2px 4px rgba(11, 29, 50, 0.06), 0 14px 28px -10px rgba(11, 29, 50, 0.22)',
             },
         },
     },

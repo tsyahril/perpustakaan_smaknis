@@ -21,7 +21,10 @@ class RedirectIfAuthenticated
 
         foreach ($guards as $guard) {
             if (Auth::guard($guard)->check()) {
-                return redirect(RouteServiceProvider::HOME);
+                // Anggota biasa tidak punya akses ke panel admin (HOME).
+                return Auth::guard($guard)->user()->canManageLibrary()
+                    ? redirect(RouteServiceProvider::HOME)
+                    : redirect()->route('guru.dashboard');
             }
         }
 

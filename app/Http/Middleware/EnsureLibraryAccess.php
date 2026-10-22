@@ -16,10 +16,13 @@ class EnsureLibraryAccess
             abort(403, 'Silakan login terlebih dahulu.');
         }
 
-        // Admin selalu memiliki akses penuh ke fitur perpustakaan.
-        // Pustakawan mendapat akses sesuai fungsi role yang tersedia.
         if ($user->canManageLibrary()) {
             return $next($request);
+        }
+
+        // Redirect guru to guru.dashboard saat akses admin.dashboard
+        if ($user->isGuru() && $request->route()->getName() === 'admin.dashboard') {
+            return redirect()->route('guru.dashboard');
         }
 
         abort(403, 'Akun ini tidak memiliki akses ke fitur perpustakaan.');

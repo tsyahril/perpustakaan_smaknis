@@ -39,6 +39,22 @@ class User extends Authenticatable
         return $this->belongsTo(Anggota::class, 'id_anggota');
     }
 
+    /**
+     * Buku yang ditandai favorit oleh akun ini.
+     */
+    public function favorits()
+    {
+        return $this->belongsToMany(Buku::class, 'favorits')->withTimestamps();
+    }
+
+    /**
+     * Buku di keranjang pinjam yang belum diajukan.
+     */
+    public function keranjang()
+    {
+        return $this->belongsToMany(Buku::class, 'keranjangs')->withTimestamps();
+    }
+
     public function isAdmin(): bool
     {
         return $this->role === 'admin';

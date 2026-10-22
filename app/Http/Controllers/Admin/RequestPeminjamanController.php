@@ -79,3 +79,7 @@ class RequestPeminjamanController extends Controller
         return back()->with('success', 'Pengajuan ditolak, stok dikembalikan.');
     }
 }
+
+
+
+

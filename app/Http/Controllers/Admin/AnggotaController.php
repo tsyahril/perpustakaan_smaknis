@@ -15,10 +15,6 @@ use Illuminate\View\View;
 
 class AnggotaController extends Controller
 {
-    /**
-     * Pilihan bagian/jabatan untuk role guru. Memakai kolom yang sama
-     * dengan kelas, jadi isinya "Staf" / "Guru BK" dan seterusnya.
-     */
     public const BAGIAN_GURU = [
         'Guru Kelas',
         'Guru BK',
@@ -35,8 +31,6 @@ class AnggotaController extends Controller
         $anggotas = User::query()
             ->select('users.*')
             ->with('anggota')
-            // Total pinjam diambil dari kartu anggota yang terhubung;
-            // pengajuan yang ditolak tidak ikut dihitung.
             ->selectSub(
                 Transaksi::query()
                     ->selectRaw('COUNT(*)')
@@ -45,9 +39,9 @@ class AnggotaController extends Controller
                 'total_pinjam'
             )
             ->when($search, fn ($q) => $q->where(fn ($w) => $w
-                ->where('name', 'like', "%{$search}%")
-                ->orWhere('email', 'like', "%{$search}%")
-                ->orWhere('kelas', 'like', "%{$search}%")))
+                ->where('name', 'like', '%{$search}%')
+                ->orWhere('email', 'like', '%{$search}%')
+                ->orWhere('kelas', 'like', '%{$search}%')))
             ->when($role && in_array($role, User::ROLES), fn ($q) => $q->where('role', $role))
             ->orderBy('name')
             ->paginate(10)
@@ -111,7 +105,6 @@ class AnggotaController extends Controller
 
     public function destroy(User $anggota): RedirectResponse
     {
-        // Cegah admin menghapus akunnya sendiri.
         if ($anggota->id === auth()->id()) {
             return back()->with('error', 'Tidak bisa menghapus akun sendiri.');
         }
@@ -133,9 +126,19 @@ class AnggotaController extends Controller
         return back()->with('success', "Password {$anggota->name} berhasil direset.");
     }
 
-    /**
-     * Aturan validasi bersama untuk store & update.
-     */
+    public function toggleAkses(User $anggota): RedirectResponse
+    {
+        if (!$anggota->isGuru()) {
+            return back()->with('error', 'Toggle akses hanya tersedia untuk guru.');
+        }
+
+        $anggota->is_petugas = !$anggota->is_petugas;
+        $anggota->save();
+
+        $status = $anggota->is_petugas ? 'Pustakawan' : 'Guru Biasa';
+        return back()->with('success', "Akses {$anggota->name} diubah menjadi {$status}.");
+    }
+
     protected function rules(?User $anggota = null): array
     {
         return [
@@ -146,15 +149,11 @@ class AnggotaController extends Controller
             ],
             'password' => [$anggota ? 'nullable' : 'required', 'string', 'min:8', 'confirmed'],
             'role' => ['required', Rule::in(User::ROLES)],
-            // Siswa wajib isi kelas, guru wajib isi bagian/jabatan.
             'kelas' => ['nullable', 'required_if:role,siswa', 'required_if:role,guru', 'string', 'max:60'],
             'id_anggota' => ['nullable'],
         ];
     }
 
-    /**
-     * Data pendukung form: daftar kelas (untuk siswa) dan kartu anggota.
-     */
     protected function formData(): array
     {
         return [
@@ -164,17 +163,11 @@ class AnggotaController extends Controller
         ];
     }
 
-    /**
-     * Admin & pustakawan tidak punya kelas/bagian, jadi dikosongkan.
-     */
     protected function kelasUntuk(string $role, ?string $kelas): ?string
     {
         return in_array($role, ['siswa', 'guru'], true) ? ($kelas ?: null) : null;
     }
 
-    /**
-     * Kartu anggota: pakai yang dipilih, atau cari otomatis dari nama akun.
-     */
     protected function cariKartuAnggota($idAnggota, string $nama): ?int
     {
         if (filled($idAnggota) && $idAnggota !== 'auto') {
@@ -186,3 +179,4 @@ class AnggotaController extends Controller
         return $match?->id;
     }
 }
+
