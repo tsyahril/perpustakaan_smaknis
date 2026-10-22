@@ -82,26 +82,17 @@
     </div>
 </section>
 
-{{-- Kategori pilihan --}}
-@if ($kategoriPilihan->isNotEmpty())
-    <section class="wadah mt-10">
-        <div class="mb-4 flex items-end justify-between gap-4">
-            <h2 class="judul-bagian">Kategori pilihan</h2>
-            <a href="{{ route('katalog.index') }}" class="inline-flex items-center gap-1 text-sm font-semibold text-brand-700 hover:text-brand-800">Semua katalog <x-member.ikon nama="chevron-right" kelas="h-4 w-4" /></a>
-        </div>
-        <div class="grid grid-cols-4 gap-3 sm:gap-4 lg:grid-cols-8">
-            @foreach ($kategoriPilihan as $kategori)
-                <a href="{{ route('katalog.index', ['kategori' => $kategori->id]) }}" class="group flex flex-col items-center gap-2.5 rounded-2xl bg-white p-3 text-center shadow-kartu ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:shadow-kartu-naik sm:p-4">
-                    <span class="flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-50 text-brand-600 transition group-hover:bg-brand-600 group-hover:text-white sm:h-14 sm:w-14">
-                        <x-member.ikon :nama="\App\Support\Ikon::untukKategori($kategori->nama)" kelas="h-6 w-6" />
-                    </span>
-                    <span class="line-clamp-2 text-xs font-semibold leading-tight text-slate-700 sm:text-sm">{{ $kategori->nama }}</span>
-                    <span class="text-[11px] text-slate-400">{{ $kategori->bukus_count }} buku</span>
-                </a>
-            @endforeach
-        </div>
-    </section>
-@endif
+{{-- Statistik overlay --}}
+<section class="wadah -mt-8 relative z-10">
+    <dl class="grid grid-cols-3 gap-3 divide-x divide-slate-200 rounded-3xl bg-white p-6 shadow-kartu ring-1 ring-slate-100 text-center sm:gap-4 sm:p-8">
+        @foreach ([['Judul buku', $statistik['judul']], ['Eksemplar tersedia', $statistik['eksemplar']], ['Kategori', $statistik['kategori']]] as [$label, $nilai])
+            <div class="px-2">
+                <dd class="text-2xl font-extrabold tracking-tight text-brand-700 sm:text-3xl">{{ number_format($nilai, 0, ',', '.') }}</dd>
+                <dt class="mt-1 text-xs text-slate-500 sm:text-sm">{{ $label }}</dt>
+            </div>
+        @endforeach
+    </dl>
+</section>
 
 <div class="mt-12 space-y-12">
     @if ($rekomendasi->isNotEmpty())
@@ -134,13 +125,5 @@
             </div>
         @endforeach
     </div>
-    <dl class="mt-6 grid grid-cols-3 divide-x divide-slate-200 text-center">
-        @foreach ([['Judul buku', $statistik['judul']], ['Eksemplar tersedia', $statistik['eksemplar']], ['Kategori', $statistik['kategori']]] as [$label, $nilai])
-            <div class="px-2">
-                <dd class="text-2xl font-extrabold tracking-tight text-brand-700 sm:text-3xl">{{ number_format($nilai, 0, ',', '.') }}</dd>
-                <dt class="mt-1 text-xs text-slate-500 sm:text-sm">{{ $label }}</dt>
-            </div>
-        @endforeach
-    </dl>
 </section>
 @endsection
