@@ -44,14 +44,6 @@
             </span>
         </a>
 
-        <div class="relative hidden lg:block">
-            <button type="button" class="btn-soft !px-3.5" @click="kategori = ! kategori" :aria-expanded="kategori">
-                <x-member.ikon nama="grid" kelas="h-4 w-4" />
-                Kategori
-                <x-member.ikon nama="chevron-down" kelas="h-4 w-4 transition" ::class="kategori && 'rotate-180'" />
-            </button>
-        </div>
-
         {{-- Kotak cari: di layar kecil turun ke baris sendiri. --}}
         <form action="{{ route('katalog.index') }}" method="GET" role="search"
               class="relative order-last w-full lg:order-none lg:w-auto lg:flex-1"
@@ -177,27 +169,6 @@
         </nav>
     </div>
 
-    {{-- Panel semua kategori (desktop) --}}
-    <div x-show="kategori" x-cloak x-transition.opacity.duration.150ms @click.outside="kategori = false"
-         class="absolute inset-x-0 top-full z-40 hidden border-b border-slate-200 bg-white shadow-kartu-naik lg:block">
-        <div class="wadah py-5">
-            <div class="mb-4 flex items-center justify-between gap-4">
-                <p class="text-sm font-bold text-slate-900">Semua kategori <span class="font-medium text-slate-400">({{ $kategoris->count() }})</span></p>
-                <input type="search" x-model="cariKategori" placeholder="Cari kategori..." class="input !w-64 !py-2" aria-label="Cari kategori">
-            </div>
-            <ul class="grid max-h-80 grid-cols-2 gap-x-6 gap-y-0.5 overflow-y-auto pr-2 lg:grid-cols-4">
-                @foreach ($kategoris as $k)
-                    <li x-show="@js(\Illuminate\Support\Str::lower($k->nama)).includes(cariKategori.toLowerCase().trim())">
-                        <a href="{{ route('katalog.index', ['kategori' => $k->id]) }}" class="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-700">
-                            <span class="truncate">{{ $k->nama }}</span>
-                            <span class="text-xs text-slate-400">{{ $k->bukus_count }}</span>
-                        </a>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
-    </div>
-
     {{-- Navigasi kedua (desktop) --}}
     <nav class="hidden border-t border-slate-100 lg:block" aria-label="Navigasi utama">
         <div class="wadah flex h-11 items-center gap-1 text-sm">
@@ -208,11 +179,42 @@
                     'text-slate-600 hover:bg-slate-100 hover:text-slate-900' => ! $sedangAktif,
                 ])>{{ $label }}</a>
             @endforeach
-            @if ($kategoriTeratas->isNotEmpty())
-                <span class="mx-2 h-4 w-px bg-slate-200"></span>
-                @foreach ($kategoriTeratas as $k)
-                    <a href="{{ route('katalog.index', ['kategori' => $k->id]) }}" class="rounded-md px-3 py-1.5 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900">{{ $k->nama }}</a>
-                @endforeach
+
+            @if ($kategoris->isNotEmpty())
+                <span class="mx-1.5 h-4 w-px bg-slate-200"></span>
+
+                <div @click.outside="kategori = false">
+                    <button type="button" @click="kategori = ! kategori" :aria-expanded="kategori"
+                            class="flex items-center gap-1.5 rounded-md px-3 py-1.5 font-medium transition"
+                            :class="kategori
+                                ? 'bg-brand-50 font-semibold text-brand-700'
+                                : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'">
+                        <x-member.ikon nama="grid" kelas="h-4 w-4" />
+                        Kategori
+                        <x-member.ikon nama="chevron-down" kelas="h-4 w-4 transition" ::class="kategori && 'rotate-180'" />
+                    </button>
+
+                    {{-- Panel semua kategori, turun di bawah header --}}
+                    <div x-show="kategori" x-cloak x-transition.opacity.duration.150ms
+                         class="absolute inset-x-0 top-full z-40 border-b border-slate-200 bg-white shadow-kartu-naik">
+                        <div class="wadah py-5">
+                            <div class="mb-4 flex items-center justify-between gap-4">
+                                <p class="text-sm font-bold text-slate-900">Semua kategori <span class="font-medium text-slate-400">({{ $kategoris->count() }})</span></p>
+                                <input type="search" x-model="cariKategori" placeholder="Cari kategori..." class="input !w-64 !py-2" aria-label="Cari kategori">
+                            </div>
+                            <ul class="grid max-h-80 grid-cols-2 gap-x-6 gap-y-0.5 overflow-y-auto pr-2 lg:grid-cols-4">
+                                @foreach ($kategoris as $k)
+                                    <li x-show="@js(\Illuminate\Support\Str::lower($k->nama)).includes(cariKategori.toLowerCase().trim())">
+                                        <a href="{{ route('katalog.index', ['kategori' => $k->id]) }}" class="flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm text-slate-700 hover:bg-brand-50 hover:text-brand-700">
+                                            <span class="truncate">{{ $k->nama }}</span>
+                                            <span class="text-xs text-slate-400">{{ $k->bukus_count }}</span>
+                                        </a>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    </div>
+                </div>
             @endif
         </div>
     </nav>
@@ -227,14 +229,23 @@
                     'text-slate-700 hover:bg-slate-50' => ! $sedangAktif,
                 ])>{{ $label }}</a>
             @endforeach
-            <details class="rounded-lg">
-                <summary class="cursor-pointer list-none rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">Semua kategori</summary>
-                <ul class="mt-1 grid grid-cols-2 gap-1 pl-2">
-                    @foreach ($kategoris as $k)
-                        <li><a href="{{ route('katalog.index', ['kategori' => $k->id]) }}" class="block truncate rounded-md px-3 py-2 text-sm text-slate-600 hover:bg-slate-50">{{ $k->nama }}</a></li>
-                    @endforeach
-                </ul>
-            </details>
+
+            @if ($kategoris->isNotEmpty())
+                <details class="rounded-lg">
+                    <summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                        <span class="flex items-center gap-2">
+                            <x-member.ikon nama="grid" kelas="h-4 w-4 text-slate-400" />
+                            Kategori
+                        </span>
+                        <x-member.ikon nama="chevron-down" kelas="h-4 w-4 text-slate-400" />
+                    </summary>
+                    <ul class="mt-1 grid grid-cols-2 gap-1 pl-2">
+                        @foreach ($kategoris as $k)
+                            <li><a href="{{ route('katalog.index', ['kategori' => $k->id]) }}" class="block truncate rounded-md px-3 py-2 text-sm text-slate-600 hover:bg-slate-50">{{ $k->nama }}</a></li>
+                        @endforeach
+                    </ul>
+                </details>
+            @endif
         </div>
     </div>
 </header>

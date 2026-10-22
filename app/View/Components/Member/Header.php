@@ -18,7 +18,12 @@ class Header extends Component
     public function __construct()
     {
         $this->kategoris = Kategori::withCount('bukus')->orderBy('nama')->get();
-        $this->kategoriTeratas = $this->kategoris->where('bukus_count', '>', 0)->sortByDesc('bukus_count')->take(5)->values();
+        $this->kategoriTeratas = $this->kategoris
+            ->where('bukus_count', '>', 0)
+            ->whereNotIn('nama', ['Fiksi', 'Komik', 'Pelajaran', 'Biografi', 'Non-Fiksi'])
+            ->sortByDesc('bukus_count')
+            ->take(5)
+            ->values();
     }
 
     public function render(): View
