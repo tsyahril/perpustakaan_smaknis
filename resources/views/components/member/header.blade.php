@@ -6,9 +6,6 @@
     $tautanNav = [
         ['Beranda', route('beranda'), $aktif('beranda')],
         ['Katalog', route('katalog.index'), $aktif('katalog.*') && ! request()->hasAny(['urut', 'tersedia'])],
-        ['Buku Terbaru', route('katalog.index', ['urut' => 'terbaru']), request('urut') === 'terbaru'],
-        ['Sering Dipinjam', route('katalog.index', ['urut' => 'populer']), request('urut') === 'populer'],
-        ['Tersedia', route('katalog.index', ['tersedia' => 1]), request()->boolean('tersedia')],
         ['Panduan', route('panduan'), $aktif('panduan')],
     ];
 @endphp

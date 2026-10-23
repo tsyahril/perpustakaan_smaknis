@@ -108,13 +108,30 @@
                     @endif
                 </fieldset>
 
-                <fieldset>
-                    <legend class="mb-3 text-sm font-bold text-slate-900">Ketersediaan</legend>
-                    <label class="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm hover:bg-slate-50">
-                        <input type="checkbox" name="tersedia" value="1" class="rounded text-brand-600 focus:ring-brand-500" @checked($filter['tersedia']) @change="$el.form.requestSubmit()">
-                        Hanya yang tersedia
-                    </label>
-                </fieldset>
+                @if ($penulis->isNotEmpty())
+                    <fieldset x-data="{ semua: false }">
+                        <legend class="mb-3 text-sm font-bold text-slate-900">Penulis</legend>
+                        <div class="space-y-0.5">
+                            @foreach ($penulisTampil as $pu)
+                                <label class="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm hover:bg-slate-50">
+                                    <input type="radio" name="penulis" value="{{ $pu->penulis }}" class="text-brand-600 focus:ring-brand-500" @checked($filter['penulis'] === $pu->penulis) @change="$el.form.requestSubmit()">
+                                    <span class="flex-1 truncate">{{ $pu->penulis }}</span>
+                                    <span class="text-xs text-slate-400">{{ $pu->total }}</span>
+                                </label>
+                            @endforeach
+                            @foreach ($penulisSisa as $pu)
+                                <label x-show="semua" x-cloak class="flex cursor-pointer items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm hover:bg-slate-50">
+                                    <input type="radio" name="penulis" value="{{ $pu->penulis }}" class="text-brand-600 focus:ring-brand-500" @checked($filter['penulis'] === $pu->penulis) @change="$el.form.requestSubmit()">
+                                    <span class="flex-1 truncate">{{ $pu->penulis }}</span>
+                                    <span class="text-xs text-slate-400">{{ $pu->total }}</span>
+                                </label>
+                            @endforeach
+                        </div>
+                        @if ($penulisSisa->isNotEmpty())
+                            <button type="button" class="mt-2 text-xs font-semibold text-brand-700 hover:underline" @click="semua = ! semua" x-text="semua ? 'Sembunyikan' : 'Lihat {{ $penulisSisa->count() }} penulis lainnya'">Lihat {{ $penulisSisa->count() }} penulis lainnya</button>
+                        @endif
+                    </fieldset>
+                @endif
 
                 @if ($penerbits->isNotEmpty())
                     <fieldset x-data="{ semua: false }">

@@ -29,6 +29,7 @@ class KatalogController extends Controller
         'tahun_terbaru' => 'Tahun terbit terbaru',
         'tahun_terlama' => 'Tahun terbit terlama',
         'stok' => 'Stok terbanyak',
+        'tersedia' => 'Tersedia',
     ];
 
     public function index(Request $request): View
@@ -43,7 +44,7 @@ class KatalogController extends Controller
             ->when($filter['penulis'], fn ($q, $penulis) => $q->where('penulis', $penulis))
             ->when($filter['tahun_dari'], fn ($q, $tahun) => $q->where('tahun_terbit', '>=', $tahun))
             ->when($filter['tahun_sampai'], fn ($q, $tahun) => $q->where('tahun_terbit', '<=', $tahun))
-            ->when($filter['tersedia'], fn ($q) => $q->tersedia());
+            ->when($filter['tersedia'] || $filter['urut'] === 'tersedia', fn ($q) => $q->tersedia());
 
         if ($filter['urut'] === 'populer') {
             $query->denganJumlahDipinjam();
@@ -63,6 +64,11 @@ class KatalogController extends Controller
             'kategoriAktif' => $filter['kategori'] ? $kategoris->firstWhere('id', $filter['kategori']) : null,
             'kategoriTeratas' => $kategoris->sortByDesc('bukus_count')->take(8)->values(),
             'penerbits' => $this->daftarPenerbit(),
+            'penerbitTampil' => $this->daftarPenerbit()->take(6),
+            'penerbitSisa' => $this->daftarPenerbit()->slice(6)->values(),
+            'penulis' => $this->daftarPenulis(),
+            'penulisTampil' => $this->daftarPenulis()->take(6),
+            'penulisSisa' => $this->daftarPenulis()->slice(6)->values(),
             'chips' => $this->chipFilter($request, $filter, $kategoris),
             'urutan' => Arr::except(self::URUTAN, $filter['q'] === '' ? ['relevan'] : []),
         ]);
@@ -152,6 +158,9 @@ class KatalogController extends Controller
         $tahun = fn (string $kunci) => ($t = (int) $request->query($kunci)) >= 1000 && $t <= 9999 ? $t : null;
 
         $penulis = $request->query('penulis');
+        
+        // Jika urut = 'tersedia', aktifkan filter tersedia
+        $tersedia = $request->boolean('tersedia') || $urut === 'tersedia';
 
         return [
             'q' => $kata,
@@ -165,7 +174,7 @@ class KatalogController extends Controller
             'penulis' => is_string($penulis) && $penulis !== '' ? Str::limit($penulis, 150, '') : null,
             'tahun_dari' => $tahun('tahun_dari'),
             'tahun_sampai' => $tahun('tahun_sampai'),
-            'tersedia' => $request->boolean('tersedia'),
+            'tersedia' => $tersedia,
             'urut' => $urut,
         ];
     }
@@ -180,6 +189,20 @@ class KatalogController extends Controller
             ->groupBy('penerbit')
             ->orderByDesc('total')
             ->orderBy('penerbit')
+            ->limit(30)
+            ->get();
+    }
+
+    /**
+     * Penulis yang punya buku, dari yang paling banyak.
+     */
+    protected function daftarPenulis()
+    {
+        return Buku::query()
+            ->select('penulis', DB::raw('COUNT(*) as total'))
+            ->groupBy('penulis')
+            ->orderByDesc('total')
+            ->orderBy('penulis')
             ->limit(30)
             ->get();
     }
@@ -223,8 +246,8 @@ class KatalogController extends Controller
             ];
         }
 
-        if ($filter['tersedia']) {
-            $chips[] = ['label' => 'Hanya yang tersedia', 'url' => $tanpa('tersedia')];
+        if ($filter['tersedia'] || $filter['urut'] === 'tersedia') {
+            $chips[] = ['label' => 'Hanya yang tersedia', 'url' => $tanpa('tersedia', 'urut')];
         }
 
         return $chips;
